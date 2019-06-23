@@ -1,0 +1,6 @@
+C:\Users\dimansf\source\repos\Raspil\BagTask\bin\Debug\BagTask.dll
+C:\Users\dimansf\source\repos\Raspil\BagTask\bin\Debug\BagTask.pdb
+C:\Users\dimansf\source\repos\Raspil\BagTask\obj\Debug\BagTask.csprojAssemblyReference.cache
+C:\Users\dimansf\source\repos\Raspil\BagTask\obj\Debug\BagTask.csproj.CoreCompileInputs.cache
+C:\Users\dimansf\source\repos\Raspil\BagTask\obj\Debug\BagTask.dll
+C:\Users\dimansf\source\repos\Raspil\BagTask\obj\Debug\BagTask.pdb
