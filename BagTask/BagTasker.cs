@@ -106,6 +106,8 @@ namespace BagTask
 		/// <param name="counter"></param>
 		private void Deeper(int depth, int currSum, List<(string, int)> conds, string condStr, int counter)
 		{ 
+
+			//[ "остаток от доски", ["строка заказа", число в доске]]
 			if (depth >= orders.Length)
 			{
 				return;
