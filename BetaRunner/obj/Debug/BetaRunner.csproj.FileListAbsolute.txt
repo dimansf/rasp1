@@ -10,3 +10,15 @@ C:\Users\dimansf\source\repos\Raspil\BetaRunner\obj\Debug\BetaRunner.csproj.Core
 C:\Users\dimansf\source\repos\Raspil\BetaRunner\obj\Debug\BetaRunner.csproj.CopyComplete
 C:\Users\dimansf\source\repos\Raspil\BetaRunner\obj\Debug\BetaRunner.exe
 C:\Users\dimansf\source\repos\Raspil\BetaRunner\obj\Debug\BetaRunner.pdb
+C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\bin\Debug\BetaRunner.exe.config
+C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\bin\Debug\BetaRunner.exe
+C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\bin\Debug\BetaRunner.pdb
+C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\bin\Debug\BagTask.dll
+C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\bin\Debug\DataMock.dll
+C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\bin\Debug\BagTask.pdb
+C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\bin\Debug\DataMock.pdb
+C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\obj\Debug\BetaRunner.csprojAssemblyReference.cache
+C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\obj\Debug\BetaRunner.csproj.CoreCompileInputs.cache
+C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\obj\Debug\BetaRunner.csproj.CopyComplete
+C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\obj\Debug\BetaRunner.exe
+C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\obj\Debug\BetaRunner.pdb
