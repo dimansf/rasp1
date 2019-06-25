@@ -1,0 +1,8 @@
+C:\Users\dimansf\source\repos\Raspil\DataMock\bin\Debug\netstandard2.0\DataMock.deps.json
+C:\Users\dimansf\source\repos\Raspil\DataMock\bin\Debug\netstandard2.0\DataMock.dll
+C:\Users\dimansf\source\repos\Raspil\DataMock\bin\Debug\netstandard2.0\DataMock.pdb
+C:\Users\dimansf\source\repos\Raspil\DataMock\obj\Debug\netstandard2.0\DataMock.csproj.CoreCompileInputs.cache
+C:\Users\dimansf\source\repos\Raspil\DataMock\obj\Debug\netstandard2.0\DataMock.AssemblyInfoInputs.cache
+C:\Users\dimansf\source\repos\Raspil\DataMock\obj\Debug\netstandard2.0\DataMock.AssemblyInfo.cs
+C:\Users\dimansf\source\repos\Raspil\DataMock\obj\Debug\netstandard2.0\DataMock.dll
+C:\Users\dimansf\source\repos\Raspil\DataMock\obj\Debug\netstandard2.0\DataMock.pdb

@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbManager", "DbManager\DbMa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataMock", "DataMock\DataMock.csproj", "{3668BCEA-BF7E-45A4-94FD-2D9ADA3DD48E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetaRunner", "BetaRunner\BetaRunner.csproj", "{F45D797D-B923-4275-BE89-614A0A85889E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{3668BCEA-BF7E-45A4-94FD-2D9ADA3DD48E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3668BCEA-BF7E-45A4-94FD-2D9ADA3DD48E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3668BCEA-BF7E-45A4-94FD-2D9ADA3DD48E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F45D797D-B923-4275-BE89-614A0A85889E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F45D797D-B923-4275-BE89-614A0A85889E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F45D797D-B923-4275-BE89-614A0A85889E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F45D797D-B923-4275-BE89-614A0A85889E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
