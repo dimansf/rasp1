@@ -22,3 +22,8 @@ C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\obj\Debug\BetaRun
 C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\obj\Debug\BetaRunner.csproj.CopyComplete
 C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\obj\Debug\BetaRunner.exe
 C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\obj\Debug\BetaRunner.pdb
+C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\bin\Debug\Raspil.pdb
+C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\bin\Debug\Raspil.dll
+C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\bin\Debug\Raspil.dll.config
+C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\bin\Debug\Newtonsoft.Json.dll
+C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\bin\Debug\Newtonsoft.Json.xml
