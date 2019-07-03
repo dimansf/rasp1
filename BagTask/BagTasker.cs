@@ -9,6 +9,7 @@ namespace BagTask
 {
 	public class BagTasker
 	{
+        int[] dlinnomerScladId = new int[] { 3, 4 };
 		/// <summary>
 		/// 
 		/// </summary>
@@ -17,42 +18,32 @@ namespace BagTask
 		/// 
 		/// </summary>
 		int total;
-		/// <summary>
-		/// 
-		/// </summary>
-		int ostatok;
-		/// <summary>
-		/// 
-		/// </summary>
-		int liquid;
+		
 		/// <summary>
 		/// 
 		/// </summary>
 		List<(int, CustomList)> conds;
-		/// <summary>
-		/// 
-		/// </summary>
-		int wSaw;
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="orders"></param>
-		/// <param name="store"></param>
-		/// <param name="liqCondition"></param>
-		/// <returns></returns>
-		public Dictionary<(int, int), List<(int, CustomList)>> calculate(int[][] orders, int[][] store, bool liqCondition = true)
+        /// <summary>
+        /// На этому вроне нет id досок, просто заказы и массив складов
+        /// 2 уровень
+        /// </summary>
+        /// <param name="orders"></param>
+        /// <param name="store"></param>
+        /// <param name="liqCondition"></param>
+        /// <returns> Лист [доска => комбинация]</returns>
+        public List<((int, int), List<(int, CustomList)>)> calculate(int[][] orders, int[][] store, bool liqCondition = true, int widthSaw=4)
 		{
-			var dat = new Dictionary<(int, int), List<(int, CustomList)>>();
+			var dat = new List<((int,int), List<(int, CustomList)>)>();
 
 			store.Select(el =>
 			{
 				//[ид, длина, кол - во, ликвид, макс.обр, номер склада]
-				var temp = calc(orders, el[1]);
+				var temp = calc(orders, el[1], widthSaw);
 				if (liqCondition)
 				{
-					temp = LiqSelect(temp, el[3], el[4]);
+					temp = LiqSelect(temp, el);
 				}
-				dat[(el[1], el[5])] = temp;
+				dat.Add( ((el[1], el[5]), temp) );
 
 				return 0;
 			}).ToList();
@@ -66,13 +57,17 @@ namespace BagTask
 		/// <param name="liq"></param>
 		/// <param name="obr"></param>
 		/// <returns></returns>
-		private List<(int, CustomList)> LiqSelect(List<(int, CustomList)> combs , int liq, int obr)
+		private List<(int, CustomList)> LiqSelect(List<(int, CustomList)> combs , int[] els)
 		{
 			var res = new List<(int, CustomList)>();
 			foreach (var el in combs)
 			{
-				if (el.Item1>= liq || el.Item1 <= obr)
+				if (el.Item1>= els[3] || el.Item1 <= els[1]/100 * els[4]) 
 					res.Add(el);
+                else if(el.Item2.lis.Count() == 1 && el.Item2.lis[0].Item2 == 1 && els[4] == dlinnomerScladId[0] || els[4] == dlinnomerScladId[1] && el.Item2.lis[0].Item3 + els[3] > els[1])
+                {
+                    res.Add(el);
+                }
 			}
 			return res;
 
@@ -88,12 +83,10 @@ namespace BagTask
 		{
 			this.orders = orders.Select(el => new int[] { el[0], el[1] + widthWa, el[2], el[3] }).ToArray();
 			this.total = total;
-
-
 			// [строка сложенных элементов, остаток от доски]
 			conds = new List<(int, CustomList)>();
-			
-			Deeper(0, 0, conds, new CustomList(), 0);
+            int x = 0;
+			Deeper(0, ref x, conds, new CustomList(), 0);
 
 			return conds;
 		}
@@ -106,11 +99,11 @@ namespace BagTask
 		/// <param name="conds"> Массив комбинаций главный </param>
 		/// <param name="condStr"> переформировать в лист</param>
 		/// <param name="counter"></param>
-		private void Deeper(int depth, int currSum, List<(int, CustomList)> conds, CustomList cond,  int  counter)
-		{ 
-
-			//[ "остаток от доски", ["ид заказа", число в доске]]
-			if (depth >= orders.Length)
+		private void Deeper(int depth, ref int currSum, List<(int, CustomList)> conds, CustomList cond,  int  counter)
+		{
+            var cond2 = new CustomList(cond);
+            //[ "остаток от доски", ["ид заказа", число в доске]]
+            if (depth >= orders.Length)
 			{
 				return;
 			}
@@ -121,31 +114,28 @@ namespace BagTask
 				// ид заказа, число досок
 				if (i > 0)
 				{
-					cond.Add((orders[depth][3], i));
-					conds.Add((this.total - s, cond));
+                    if(!keyExist(conds, this.total - s))
+                    {
+                        cond2.Add((orders[depth][3], i, orders[depth][1]));
+                        conds.Add((this.total - s, cond2));
+                    }
+                        
 				}
-				Deeper(depth + 1, s, conds, cond, counter + i);
+				Deeper(depth + 1, ref s, conds, cond2, counter + i);
 			}
 			
 		}
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="keyStr"></param>
-		/// <returns></returns>
-		//public bool HasKey(string keyStr)
-		//{
-		//	var flag = false;
-		//	conds.Select(element => {
-		//		if (element.Item1 == keyStr)
-		//		{
-		//			flag = true;
-		//			return 0;
-		//		}
-		//		return 0;
-		//	});
-		//	return flag;
-		//}
-	}
+
+        private bool keyExist(List<(int, CustomList)> conds, int ostk)
+        {
+            foreach(var cn in conds)
+            {
+                if (cn.Item1 == ostk)
+                    return true;
+            }
+            return false;
+        }
+      
+    }
 }
 	

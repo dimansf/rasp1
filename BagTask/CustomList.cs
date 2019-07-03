@@ -9,24 +9,28 @@ namespace BagTasker
 	public class CustomList
 	{
 		
-		public List<(int,int)> lis = null;
-		public CustomList(int x, int y)
+		public List<(int,int, int)> lis = null;
+		public CustomList(int x, int y, int z)
 		{
-			lis = new List<(int, int)>();
-			this.Add((x, y));
+			lis = new List<(int, int, int)>();
+			this.Add((x, y, z));
 		}
 		public CustomList()
 		{
-			lis = new List<(int, int)>();
+			lis = new List<(int, int, int)>();
 			
 		}
-		public void  Add((int,int) tup)
+        public CustomList(CustomList cl) {
+            lis = cl.lis.Select(el => (el.Item1, el.Item2, el.Item3)).ToList();
+        }
+
+		public void  Add((int,int, int) tup)
 		{               //(ид строки, кол-во)
 			bool fl = true;
 			lis = lis.Select(el => {
 				if (el.Item1 == tup.Item1) {
 					fl = false;
-					return (el.Item1, el.Item2 + tup.Item2);
+					return (el.Item1, tup.Item2, el.Item3);
 				}
 				return el;
 			}).ToList();

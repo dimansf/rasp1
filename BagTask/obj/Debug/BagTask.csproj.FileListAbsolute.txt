@@ -8,3 +8,4 @@ C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BagTask\bin\Debug\BagTask.pd
 C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BagTask\obj\Debug\BagTask.csproj.CoreCompileInputs.cache
 C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BagTask\obj\Debug\BagTask.dll
 C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BagTask\obj\Debug\BagTask.pdb
+C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BagTask\obj\Debug\BagTask.csprojAssemblyReference.cache

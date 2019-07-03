@@ -3,13 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BagTask", "BagTask\BagTask.csproj", "{0F30DD16-528E-423A-B553-0B4EC3152696}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raspil", "Raspil\Raspil.csproj", "{39C4DC8B-B88B-4AE3-90D6-BD5F7AE5E7B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbManager", "DbManager\DbManager.csproj", "{0AF7BD74-2EE7-4297-8F6C-EC912375C034}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataMock", "DataMock\DataMock.csproj", "{3668BCEA-BF7E-45A4-94FD-2D9ADA3DD48E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataMock", "DataMock\DataMock.csproj", "{3668BCEA-BF7E-45A4-94FD-2D9ADA3DD48E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetaRunner", "BetaRunner\BetaRunner.csproj", "{F45D797D-B923-4275-BE89-614A0A85889E}"
 EndProject
@@ -19,18 +15,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0F30DD16-528E-423A-B553-0B4EC3152696}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0F30DD16-528E-423A-B553-0B4EC3152696}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0F30DD16-528E-423A-B553-0B4EC3152696}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0F30DD16-528E-423A-B553-0B4EC3152696}.Release|Any CPU.Build.0 = Release|Any CPU
 		{39C4DC8B-B88B-4AE3-90D6-BD5F7AE5E7B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{39C4DC8B-B88B-4AE3-90D6-BD5F7AE5E7B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39C4DC8B-B88B-4AE3-90D6-BD5F7AE5E7B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39C4DC8B-B88B-4AE3-90D6-BD5F7AE5E7B1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0AF7BD74-2EE7-4297-8F6C-EC912375C034}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0AF7BD74-2EE7-4297-8F6C-EC912375C034}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0AF7BD74-2EE7-4297-8F6C-EC912375C034}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0AF7BD74-2EE7-4297-8F6C-EC912375C034}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3668BCEA-BF7E-45A4-94FD-2D9ADA3DD48E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3668BCEA-BF7E-45A4-94FD-2D9ADA3DD48E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3668BCEA-BF7E-45A4-94FD-2D9ADA3DD48E}.Release|Any CPU.ActiveCfg = Release|Any CPU
