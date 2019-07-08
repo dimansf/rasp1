@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataMock", "DataMock\DataMo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetaRunner", "BetaRunner\BetaRunner.csproj", "{F45D797D-B923-4275-BE89-614A0A85889E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net", "Net\Net.csproj", "{BFD2599B-9967-49CA-9EA2-8A225A5E559A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientRaspil", "ClientRaspil\ClientRaspil.csproj", "{A90877E6-B68C-4F64-A7D7-3194B25C1078}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{F45D797D-B923-4275-BE89-614A0A85889E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F45D797D-B923-4275-BE89-614A0A85889E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F45D797D-B923-4275-BE89-614A0A85889E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFD2599B-9967-49CA-9EA2-8A225A5E559A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFD2599B-9967-49CA-9EA2-8A225A5E559A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFD2599B-9967-49CA-9EA2-8A225A5E559A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFD2599B-9967-49CA-9EA2-8A225A5E559A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A90877E6-B68C-4F64-A7D7-3194B25C1078}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A90877E6-B68C-4F64-A7D7-3194B25C1078}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A90877E6-B68C-4F64-A7D7-3194B25C1078}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A90877E6-B68C-4F64-A7D7-3194B25C1078}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

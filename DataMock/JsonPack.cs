@@ -9,17 +9,28 @@ namespace DataMock
 {
     public class JsonPack
     {
-        public static (string,string) packGeneratedData(int[][] order, int[][] store)
+        public static string packGeneratedData(int[][] order, int[][] store)
         {
-            string ord = JsonConvert.SerializeObject(order);
-            string stro = JsonConvert.SerializeObject(store);
+            var jw = new JsonWrapper
+            {
+                order = order,
+                store = store
+            };
 
-            var x = Path.Combine(Directory.GetCurrentDirectory(), "order.json");
-            var y = Path.Combine(Directory.GetCurrentDirectory(), "store.json");
+            string ord = JsonConvert.SerializeObject(jw);
+           
+
+            var x = Path.Combine(Directory.GetCurrentDirectory(), "data.json");
             File.WriteAllText(x, ord);
-            File.WriteAllText(y, stro);
-            return (x, y);
+            return x;
             
         }
     }
+
+    public class JsonWrapper
+    {
+        public int[][] order;
+        public int[][] store;
+    }
+
 }
