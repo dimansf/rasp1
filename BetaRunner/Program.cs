@@ -28,7 +28,7 @@ namespace ServerRunner
         const int SW_SHOW = 5;
         static void Main(string[] args)
 		{
-            Runner2(args);
+            Runner(args);
         }
 
        
@@ -36,20 +36,37 @@ namespace ServerRunner
         /// 
         /// </summary>
         /// <param name="args"></param>
-        private static void Runner2(string[] args)
+        private static void Runner2()
         {
-           
-                var server = new RaspilServer("49770");
-                
-                server.RunServer();
+
+            var server = new RaspilServer("49770");
+
+            server.RunServer();
         }
 
-        private static void Runner1(string[] args)
+        private static void Runner(string[] args)
         {
-            if (args[0] == "3")
-                prog3("");
-            if (args[0] == "2")
-                prog2();
+            RaspilServer server;
+            try
+            {
+                server = new RaspilServer(args[0]);
+
+            } catch
+            {
+                server = new RaspilServer("49770");
+            }
+            try
+            {
+                if (args[1] == "hide")
+                {
+                    var win = GetConsoleWindow();
+                    ShowWindow(win, SW_HIDE);
+                }
+
+            }
+            catch { }
+
+            server.RunServer();
         }
         private static void prog1()
         {
@@ -132,7 +149,7 @@ namespace ServerRunner
                 } while (ss.Available > 0);
 
                 Console.WriteLine(DateTime.Now.ToShortTimeString() + ": " + builder.ToString());
-                File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "outFromServer.json"), builder.ToString());
+                File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "outFromServer.json"), $"{DateTime.Now.ToShortTimeString()} : {builder.ToString()} \n");
             }
             Console.Read();
         }

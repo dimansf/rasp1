@@ -26,7 +26,7 @@ namespace Net
 
         public AppExchangeClient Send(string st)
         {
-            Console.WriteLine(BitConverter.ToString(Encoding.UTF8.GetBytes(st)));
+            //Console.WriteLine(BitConverter.ToString(Encoding.UTF8.GetBytes(st)));
             Console.WriteLine(st.Count());
             listenSocket.Send(Encoding.UTF8.GetBytes(st));
             return this;
@@ -86,7 +86,7 @@ namespace Net
             {
                 bytes = conns.Receive(data);
                 builder.Append(Encoding.UTF8.GetString(data,  0, bytes));
-                Console.WriteLine("bytes " + bytes);
+                
 
             } while (conns.Available > 0);
 

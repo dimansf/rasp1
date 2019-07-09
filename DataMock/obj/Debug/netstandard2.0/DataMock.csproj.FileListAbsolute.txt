@@ -14,3 +14,4 @@ C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\DataMock\obj\Debug\netstanda
 C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\DataMock\obj\Debug\netstandard2.0\DataMock.AssemblyInfo.cs
 C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\DataMock\obj\Debug\netstandard2.0\DataMock.dll
 C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\DataMock\obj\Debug\netstandard2.0\DataMock.pdb
+C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\DataMock\obj\Debug\netstandard2.0\DataMock.csprojAssemblyReference.cache
