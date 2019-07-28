@@ -26,7 +26,20 @@ namespace Raspil
             lis = cl.lis.Select(el => (el.Item1, el.Item2, el.Item3)).ToList();
         }
 
-        public void Add((int, int, int) tup)
+		/// <summary>
+		/// Считаем число досок в списке комбинаций к доске из склада
+		/// </summary>
+		/// <returns></returns>
+		public int GetCountItems()
+		{
+			int x = 0;
+			lis.ForEach(tup =>
+			{
+				x += tup.Item2;
+			});
+			return x;
+		}
+		public void Add((int, int, int) tup)
         {               //(ид строки, кол-во)
             bool fl = true;
             lis = lis.Select(el => {

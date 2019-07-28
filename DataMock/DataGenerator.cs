@@ -85,9 +85,9 @@ namespace DataMock
 			for (int i = 0; i < lords; i++)
 			{	// [число палок, длина палок, ид палок]
                 if(noNumLines)
-				    orders.Add(new int[] { rand.Next(1,20), rand.Next(minLenObr, 58)*100, id[rand.Next(100) % id.Length]});
+				    orders.Add(new int[] { rand.Next(1,20), rand.Next(minLenObr, 22)*100, id[rand.Next(100) % id.Length]});
                 else
-				    orders.Add(new int[] { rand.Next(1,20), rand.Next(minLenObr, 58)*100, id[rand.Next(100) % id.Length], i + 1 });
+				    orders.Add(new int[] { rand.Next(1,20), rand.Next(minLenObr, 22)*100, id[rand.Next(100) % id.Length], i + 1 });
 
 			}
 

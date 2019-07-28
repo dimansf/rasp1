@@ -1,9 +1,7 @@
 C:\Users\dimansf\source\repos\Raspil\BetaRunner\bin\Debug\BetaRunner.exe.config
 C:\Users\dimansf\source\repos\Raspil\BetaRunner\bin\Debug\BetaRunner.exe
 C:\Users\dimansf\source\repos\Raspil\BetaRunner\bin\Debug\BetaRunner.pdb
-C:\Users\dimansf\source\repos\Raspil\BetaRunner\bin\Debug\BagTask.dll
 C:\Users\dimansf\source\repos\Raspil\BetaRunner\bin\Debug\DataMock.dll
-C:\Users\dimansf\source\repos\Raspil\BetaRunner\bin\Debug\BagTask.pdb
 C:\Users\dimansf\source\repos\Raspil\BetaRunner\bin\Debug\DataMock.pdb
 C:\Users\dimansf\source\repos\Raspil\BetaRunner\obj\Debug\BetaRunner.csprojAssemblyReference.cache
 C:\Users\dimansf\source\repos\Raspil\BetaRunner\obj\Debug\BetaRunner.csproj.CoreCompileInputs.cache
@@ -27,3 +25,10 @@ C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\bin\Debug\Newtons
 C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\bin\Debug\Newtonsoft.Json.xml
 C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\bin\Debug\Net.dll
 C:\Users\dmitry.shumeev\Documents\projects\cs\rasp1\BetaRunner\bin\Debug\Net.pdb
+C:\Users\dimansf\source\repos\Raspil\BetaRunner\bin\Debug\Newtonsoft.Json.dll
+C:\Users\dimansf\source\repos\Raspil\BetaRunner\bin\Debug\Raspil.dll
+C:\Users\dimansf\source\repos\Raspil\BetaRunner\bin\Debug\Net.dll
+C:\Users\dimansf\source\repos\Raspil\BetaRunner\bin\Debug\Raspil.pdb
+C:\Users\dimansf\source\repos\Raspil\BetaRunner\bin\Debug\Raspil.dll.config
+C:\Users\dimansf\source\repos\Raspil\BetaRunner\bin\Debug\Newtonsoft.Json.xml
+C:\Users\dimansf\source\repos\Raspil\BetaRunner\bin\Debug\Net.pdb

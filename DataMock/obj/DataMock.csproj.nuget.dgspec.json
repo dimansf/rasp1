@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\dmitry.shumeev\\Documents\\projects\\cs\\rasp1\\DataMock\\DataMock.csproj": {}
+    "C:\\Users\\dimansf\\source\\repos\\Raspil\\DataMock\\DataMock.csproj": {}
   },
   "projects": {
-    "C:\\Users\\dmitry.shumeev\\Documents\\projects\\cs\\rasp1\\DataMock\\DataMock.csproj": {
+    "C:\\Users\\dimansf\\source\\repos\\Raspil\\DataMock\\DataMock.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\dmitry.shumeev\\Documents\\projects\\cs\\rasp1\\DataMock\\DataMock.csproj",
+        "projectUniqueName": "C:\\Users\\dimansf\\source\\repos\\Raspil\\DataMock\\DataMock.csproj",
         "projectName": "DataMock",
-        "projectPath": "C:\\Users\\dmitry.shumeev\\Documents\\projects\\cs\\rasp1\\DataMock\\DataMock.csproj",
-        "packagesPath": "C:\\Users\\dmitry.shumeev\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\dmitry.shumeev\\Documents\\projects\\cs\\rasp1\\DataMock\\obj\\",
+        "projectPath": "C:\\Users\\dimansf\\source\\repos\\Raspil\\DataMock\\DataMock.csproj",
+        "packagesPath": "C:\\Users\\dimansf\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\dimansf\\source\\repos\\Raspil\\DataMock\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\dotnet\\sdk\\NuGetFallbackFolder"
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\dmitry.shumeev\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\dimansf\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [

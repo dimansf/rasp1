@@ -190,8 +190,8 @@ namespace Raspil
             var k = 0;
             while (orders.Count() != 0)
             {
-                Console.WriteLine($"k = ${k}");
-                Console.WriteLine($"${orders.Length}");
+                //Console.WriteLine($"k = ${k}");
+                //Console.WriteLine($"${orders.Length}");
                 k++;
                 try
                 {
@@ -312,7 +312,7 @@ namespace Raspil
             // удобочитаемая строка распила
             var x = newM.Select(kp => (kp.Key, kp.Value)).ToList();
             var lis = new List<string>();
-            lis.Add($"(ид доски, длина, ид склада) | (строка распила) | кол-во таких распилов | остаток");
+            //lis.Add($"(ид доски, длина, ид склада) | (строка распила) | кол-во таких распилов | остаток");
             foreach (var row in x)
             {
                 var str = $"({row.Key.Item1.Item1}, {row.Key.Item1.Item2}, {row.Key.Item1.Item3}) | {row.Key.Item2} | {row.Value} | {row.Key.Item3}";

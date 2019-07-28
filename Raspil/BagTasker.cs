@@ -82,14 +82,21 @@ namespace Raspil
         /// <returns></returns>
         private List<(int, CustomList)> calc(int[][] orders, int total, int widthWa = 4)
         {
-            this.orders = orders.Select(el => new int[] { el[0], el[1] + widthWa, el[2], el[3] }).ToArray();
-            this.total = total;
+			//this.orders = orders.Select(el => new int[] { el[0], el[1] + widthWa, el[2], el[3] }).ToArray();
+			this.orders = orders;
+			this.total = total;
             // [строка сложенных элементов, остаток от доски]
             conds = new List<(int, CustomList)>();
             int x = 0;
             Deeper(0, ref x, conds, new CustomList(), 0);
 
-            return conds;
+			//28.07.2019 убрал добавочную ширину для доски
+			conds = conds.Select(el =>{
+				return (el.Item1 - widthWa * el.Item2.GetCountItems(), el.Item2);
+				
+			}).Where(el => el.Item1 >= 0).ToList();
+
+			return conds;
         }
 
         /// <summary>
