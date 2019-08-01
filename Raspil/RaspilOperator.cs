@@ -11,24 +11,25 @@ namespace Raspil
 
     public class RaspilOperator
     {
-        private int[][] orders;
-        public string[] Orders = null;
-        private int[][] dupOrders;
+		public int[][] OrdersOrigin = null;
+		private int[][] orders;
+		public int[][]  ordersRemain = null;
+		//private int[][] dupOrders;
         int[][] store;
-        int[][] dupStore;
-        int[] rowSclad5;
+        //int[][] dupStore;
+        //int[] rowSclad5;
 
         private int widthSaw = 4;
 
         
-        public RaspilOperator( int[][] orders, int[][] store, int widhtSaw = 4, int lenForSclad5=6000)
+        public RaspilOperator( int[][] orders, int[][] store, int widhtSaw = 4)
         {
             this.orders = orders;
-            this.dupOrders = (int[][]) orders.Clone();
+            //this.dupOrders = (int[][]) orders.Clone();
             this.store = store;
-            this.dupStore = (int[][]) store.Clone();
+            //this.dupStore = (int[][]) store.Clone();
             this.widthSaw = widhtSaw;
-            this.rowSclad5 = new[] { lenForSclad5 };
+            //this.rowSclad5 = new[] { lenForSclad5 };
         }
 
         /// <summary>
@@ -213,6 +214,11 @@ namespace Raspil
             var x = HumanReadableMapRaspil(raspileMap);
             return x;
         }
+		/// <summary>
+		/// Ликвидная обрезь, если кончилась, режем длинномеры по первому алгоритму 
+		/// </summary>
+		/// <param name="liqCond"> Учитывать ликвидный остаток</param>
+		/// <returns></returns>
         public List<string> Algoritm2( bool liqCond = true)
         {
             var raspileMap = new List<List<(int, ((int, int), (int, CustomList)))>>();
@@ -221,8 +227,8 @@ namespace Raspil
 
             while (orders.Count() != 0)
             {
-                Console.WriteLine($"k = ${k}");
-                Console.WriteLine($"${orders.Length}");
+                //Console.WriteLine($"k = ${k}");
+                //Console.WriteLine($"${orders.Length}");
                 k++;
                 try
                 {
@@ -242,27 +248,30 @@ namespace Raspil
             var x = HumanReadableMapRaspil(raspileMap);
             return x;
         }
-        /// <summary>
-        /// Третий алгоритм неликвидная обрезь
-        /// </summary>
-        /// <param name="orders"></param>
-        /// <param name="store"></param>
-        /// <param name="liqCond"></param>
-        /// <returns></returns>
-
+		/// <summary>
+		/// Вызвать функцию вывода уведомления на консоль, что кончились палки на складе
+		/// </summary>
+		/// <param name="text"></param>
         private void NotifyAboutZeroRaspil(string text)
         {
             Console.WriteLine(text);
 
-            var li = new List<string>();
-            foreach(var or in orders)
-            {
-                li.Add(String.Join(",", or));
-            }
-            Orders = li.ToArray();
+			//var li = new List<string>();
+			//foreach(var or in orders)
+			//{
+			//    li.Add(String.Join(",", or));
+			//}
+			//ordersRemain = li.ToArray();
+			ordersRemain = orders.Length  != 0 ? orders : null;
         }
-
-        public List<string> Algoritm3(bool liqCond = false)
+		/// <summary>
+		/// Третий алгоритм неликвидная обрезь по максимуму, как закончится, по первому алгоритму обрези
+		/// </summary>
+		/// <param name="orders"></param>
+		/// <param name="store"></param>
+		/// <param name="liqCond"></param>
+		/// <returns></returns>
+		public List<string> Algoritm3(bool liqCond = false)
         {
             return Algoritm2(liqCond);
         }

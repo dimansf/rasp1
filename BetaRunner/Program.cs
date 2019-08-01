@@ -94,13 +94,13 @@ namespace ServerRunner
             // проводим расчет
             var raspil = new RaspilOperator(or, str);
             var x1 = raspil.Algoritm2();
-            var xx = raspil.Orders;
+            var xx = raspil.ordersRemain;
 
             string x11 = JsonConvert.SerializeObject(x1);
-            string xx11 = JsonConvert.SerializeObject(xx);
+            //string xx11 = JsonConvert.SerializeObject(xx);
 
             File.WriteAllText(Path.Combine("temp", Directory.GetCurrentDirectory(), "result.json"), x11);
-            File.WriteAllText(Path.Combine("temp", Directory.GetCurrentDirectory(), "ostatok.json"), xx11);
+            //File.WriteAllText(Path.Combine("temp", Directory.GetCurrentDirectory(), "ostatok.json"), xx11);
         }
         
         private static void prog2()

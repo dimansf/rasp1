@@ -85,38 +85,55 @@ namespace Raspil
             var raspil = new RaspilOperator(order, store, widthSaw);
 
             List<string> xx = null;
-            string[] zz = null;
+			//string[] zz = null;
+			int[][] zz = null;
 
-            switch ((int)data.algoritm)
+			switch ((int)data.algoritm)
             {
                 case 1:
                     {
-                        xx = raspil.Algoritm1(); zz = raspil.Orders;
+                        xx = raspil.Algoritm1();
                         break;
                     }
                 case 2:
                     {
-                        xx = raspil.Algoritm2(); zz = raspil.Orders;
+                        xx = raspil.Algoritm2();
                         break;
                     }
                 case 3:
                     {
-                        xx = raspil.Algoritm3(); zz = raspil.Orders;
+                        xx = raspil.Algoritm3();
                         break;
                     }
                 default:
                     return "{\"алгоритм\": \"Неизвестный алгоритм!\"}";
             }
+			// если остаток есть, отрежем последние элементы(это нумерация строк)
+			zz = raspil.ordersRemain != null ? zz.Select(el => el.Take(3).ToArray()).ToArray() : null;
 
-
+			
+			// карта распила построенная по принятым доскам склада
             string raspilMap = JsonConvert.SerializeObject(xx);
-            string ostk = JsonConvert.SerializeObject(zz);
+			// остаток списка всех заказов
+			string remain = JsonConvert.SerializeObject(zz);
 
-            return $"{{ \"raspileMap\": {raspilMap},  \"ostatok\": {ostk} }}";
+			return $"{{ \"RaspilMap\": {raspilMap},  \"Remain\": {remain} }}";
         }
 
+		private void IfOstatokExist(string[] ostatok)
+		{
+			//count, len, id, row num
+			//"ostatok": ["8,1700,130,9","1,900,130,11"]
+			var list = new List<int[]>();
 
-        private  int[][] TransformJArray(JArray arr)
+			//ostatok.Select(row => {
+				
+			//		var els = row.Split(',').Select(el => Int32.Parse(el)).ToArray();
+			//		list.Add(els.
+			//	}
+		}
+
+		private  int[][] TransformJArray(JArray arr)
         {
            return arr.Select(jv => jv.Select(j => (int)j).ToArray()).ToArray();
         }
