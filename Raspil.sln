@@ -5,13 +5,13 @@ VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raspil", "Raspil\Raspil.csproj", "{39C4DC8B-B88B-4AE3-90D6-BD5F7AE5E7B1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataMock", "DataMock\DataMock.csproj", "{3668BCEA-BF7E-45A4-94FD-2D9ADA3DD48E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetaRunner", "BetaRunner\BetaRunner.csproj", "{F45D797D-B923-4275-BE89-614A0A85889E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net", "Net\Net.csproj", "{BFD2599B-9967-49CA-9EA2-8A225A5E559A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientRaspil", "ClientRaspil\ClientRaspil.csproj", "{A90877E6-B68C-4F64-A7D7-3194B25C1078}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataGenerator", "DataGenerator\DataGenerator.csproj", "{DB4D19FD-16A2-4C00-BF3C-11072AF5AE06}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerRaspil", "ServerRaspil\ServerRaspil.csproj", "{EB83A5F8-BE61-44A6-AA6B-AF45A86E3037}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,14 +23,6 @@ Global
 		{39C4DC8B-B88B-4AE3-90D6-BD5F7AE5E7B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39C4DC8B-B88B-4AE3-90D6-BD5F7AE5E7B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39C4DC8B-B88B-4AE3-90D6-BD5F7AE5E7B1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3668BCEA-BF7E-45A4-94FD-2D9ADA3DD48E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3668BCEA-BF7E-45A4-94FD-2D9ADA3DD48E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3668BCEA-BF7E-45A4-94FD-2D9ADA3DD48E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3668BCEA-BF7E-45A4-94FD-2D9ADA3DD48E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F45D797D-B923-4275-BE89-614A0A85889E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F45D797D-B923-4275-BE89-614A0A85889E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F45D797D-B923-4275-BE89-614A0A85889E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F45D797D-B923-4275-BE89-614A0A85889E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BFD2599B-9967-49CA-9EA2-8A225A5E559A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BFD2599B-9967-49CA-9EA2-8A225A5E559A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BFD2599B-9967-49CA-9EA2-8A225A5E559A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +31,14 @@ Global
 		{A90877E6-B68C-4F64-A7D7-3194B25C1078}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A90877E6-B68C-4F64-A7D7-3194B25C1078}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A90877E6-B68C-4F64-A7D7-3194B25C1078}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB4D19FD-16A2-4C00-BF3C-11072AF5AE06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB4D19FD-16A2-4C00-BF3C-11072AF5AE06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB4D19FD-16A2-4C00-BF3C-11072AF5AE06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB4D19FD-16A2-4C00-BF3C-11072AF5AE06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB83A5F8-BE61-44A6-AA6B-AF45A86E3037}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB83A5F8-BE61-44A6-AA6B-AF45A86E3037}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB83A5F8-BE61-44A6-AA6B-AF45A86E3037}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB83A5F8-BE61-44A6-AA6B-AF45A86E3037}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

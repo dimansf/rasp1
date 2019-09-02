@@ -8,10 +8,11 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>ClientRaspil</RootNamespace>
     <AssemblyName>ClientRaspil</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -54,9 +55,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DataMock\DataMock.csproj">
-      <Project>{3668bcea-bf7e-45a4-94fd-2d9ada3dd48e}</Project>
-      <Name>DataMock</Name>
+    <ProjectReference Include="..\DataGenerator\DataGenerator.csproj">
+      <Project>{db4d19fd-16a2-4c00-bf3c-11072af5ae06}</Project>
+      <Name>DataGenerator</Name>
     </ProjectReference>
     <ProjectReference Include="..\Net\Net.csproj">
       <Project>{bfd2599b-9967-49ca-9ea2-8a225a5e559a}</Project>

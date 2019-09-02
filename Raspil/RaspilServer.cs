@@ -78,7 +78,13 @@ namespace Raspil
 
             //добавим  число строк
             int x = 1;
-            order = order.Select(el => { var e1 = el.ToList(); e1.Add(x++); return e1.ToArray(); }).ToArray();
+            order = order.Select(el => {
+				var t = el[0];
+				el[0] = el[2];
+				el[2] = t;
+				var e1 = el.ToList();
+				e1.Add(x++);
+				return e1.ToArray(); }).ToArray();
            
            
             // начинаем простраивать карту распила
@@ -109,7 +115,7 @@ namespace Raspil
                     return "{\"алгоритм\": \"Неизвестный алгоритм!\"}";
             }
 			// если остаток есть, отрежем последние элементы(это нумерация строк)
-			zz = raspil.ordersRemain != null ? zz.Select(el => el.Take(3).ToArray()).ToArray() : null;
+			zz = raspil.ordersRemain != null ? raspil.ordersRemain.Select(el => el.Take(3).ToArray()).ToArray() : null;
 
 			
 			// карта распила построенная по принятым доскам склада
@@ -120,20 +126,8 @@ namespace Raspil
 			return $"{{ \"RaspilMap\": {raspilMap},  \"Remain\": {remain} }}";
         }
 
-		private void IfOstatokExist(string[] ostatok)
-		{
-			//count, len, id, row num
-			//"ostatok": ["8,1700,130,9","1,900,130,11"]
-			var list = new List<int[]>();
-
-			//ostatok.Select(row => {
-				
-			//		var els = row.Split(',').Select(el => Int32.Parse(el)).ToArray();
-			//		list.Add(els.
-			//	}
-		}
-
-		private  int[][] TransformJArray(JArray arr)
+		
+		public  int[][] TransformJArray(JArray arr)
         {
            return arr.Select(jv => jv.Select(j => (int)j).ToArray()).ToArray();
         }

@@ -11,13 +11,16 @@ namespace Raspil
 
     public class RaspilOperator
     {
-		public int[][] OrdersOrigin = null;
+		
+		/// <summary>
+		///  [id, длина, число]
+		/// </summary>
 		private int[][] orders;
+		/// <summary>
+		/// [ид, длина, кол - во, ликвид, макс.обр, номер склада]
+		/// </summary>
+		int[][] store;
 		public int[][]  ordersRemain = null;
-		//private int[][] dupOrders;
-        int[][] store;
-        //int[][] dupStore;
-        //int[] rowSclad5;
 
         private int widthSaw = 4;
 
@@ -25,15 +28,12 @@ namespace Raspil
         public RaspilOperator( int[][] orders, int[][] store, int widhtSaw = 4)
         {
             this.orders = orders;
-            //this.dupOrders = (int[][]) orders.Clone();
             this.store = store;
-            //this.dupStore = (int[][]) store.Clone();
             this.widthSaw = widhtSaw;
-            //this.rowSclad5 = new[] { lenForSclad5 };
         }
 
         /// <summary>
-        /// Сделать обновление для ордеров и складов
+        /// Сделать обновление для заказов и складов
         /// Произвести обрезь
         /// </summary>
         /// <param name="raspil">(ид доски, ((длина, ид склада), (остаток, распилы)))</param>

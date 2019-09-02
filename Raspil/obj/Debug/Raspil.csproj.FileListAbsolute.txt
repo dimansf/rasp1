@@ -2,10 +2,8 @@ C:\Users\dimansf\source\repos\Raspil\Raspil\obj\Debug\Raspil.csproj.CoreCompileI
 C:\Users\dimansf\source\repos\Raspil\Raspil\bin\Debug\Raspil.dll.config
 C:\Users\dimansf\source\repos\Raspil\Raspil\bin\Debug\Raspil.dll
 C:\Users\dimansf\source\repos\Raspil\Raspil\bin\Debug\Raspil.pdb
-C:\Users\dimansf\source\repos\Raspil\Raspil\bin\Debug\DataMock.dll
 C:\Users\dimansf\source\repos\Raspil\Raspil\bin\Debug\Net.dll
 C:\Users\dimansf\source\repos\Raspil\Raspil\bin\Debug\Newtonsoft.Json.dll
-C:\Users\dimansf\source\repos\Raspil\Raspil\bin\Debug\DataMock.pdb
 C:\Users\dimansf\source\repos\Raspil\Raspil\bin\Debug\Net.pdb
 C:\Users\dimansf\source\repos\Raspil\Raspil\bin\Debug\Newtonsoft.Json.xml
 C:\Users\dimansf\source\repos\Raspil\Raspil\obj\Debug\Raspil.csprojAssemblyReference.cache
