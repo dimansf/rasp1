@@ -10,7 +10,7 @@ namespace Raspil
 {
     public class BagTasker
     {
-        int[] dlinnomerScladId = new int[] { 3, 4 };
+		private readonly int[] dlinnomerScladId = new int[] { 3, 4, 5 };
         /// <summary>
         /// 
         /// </summary>
@@ -24,26 +24,28 @@ namespace Raspil
         /// 
         /// </summary>
         List<(int, CustomList)> conds;
-        /// <summary>
-        /// На этому вроне нет id досок, просто заказы и массив складов
-        /// 2 уровень
-        /// </summary>
-        /// <param name="orders"></param>
-        /// <param name="store"></param>
-        /// <param name="liqCondition"></param>
-        /// <returns> Лист [доска => комбинация]</returns>
-        public List<((int, int), List<(int, CustomList)>)> calculate(int[][] orders, int[][] store, bool liqCondition = true, int widthSaw = 4)
+		/// <summary>
+		/// На этом уровне нет id досок, просто заказы и массив складов
+		/// 2 уровень
+		/// </summary>
+		/// <param name="orders"></param>
+		/// <param name="store"></param>
+		/// <param name="liqCondition"></param>
+		/// <returns> (длина доски , ИД склада ), [структура с картой подбора всех заказов]</returns>
+		public List<((int, int), List<(int, CustomList)>)> Calculate(int[][] orders, int[][] store, bool liqCondition = true, int widthSaw = 4)
         {
             var dat = new List<((int, int), List<(int, CustomList)>)>();
-
-            store.Select(el =>
+			// для каждой  палки на складе в кол-ве  > 0
+			store.Select(el =>
             {
                 //[ид, длина, кол - во, ликвид, макс.обр, номер склада]
-                var temp = calc(orders, el[1], widthSaw);
+                var temp = Calc(orders, el[1], widthSaw);
                 if (liqCondition)
                 {
                     temp = LiqSelect(temp, el);
                 }
+				// карта комбинаций для конкретной доски 
+				// длина доски , ИД склада , структура с картой подбора всех заказов
                 dat.Add(((el[1], el[5]), temp));
 
                 return 0;
@@ -52,7 +54,7 @@ namespace Raspil
             return dat;
         }
         /// <summary>
-        /// 
+        /// Проверка на условия ликвидности, по 3 и 4 параметра доски скалда
         /// </summary>
         /// <param name="combs"></param>
         /// <param name="liq"></param>
@@ -61,11 +63,21 @@ namespace Raspil
         private List<(int, CustomList)> LiqSelect(List<(int, CustomList)> combs, int[] els)
         {
             var res = new List<(int, CustomList)>();
+			var baseForMin = 0;
             foreach (var el in combs)
             {
-                if (el.Item1 >= els[3] || el.Item1 <= els[1] / 100 * els[4])
+				// если палка не длиномер то длину задать искуственно
+				baseForMin = els[1] < 5000 ? 5000 : els[1];
+				// 3 - остаток в мм , 4 - процент
+				if (el.Item1 >= els[3] || el.Item1 <= baseForMin / 100 * els[4])
                     res.Add(el);
-                else if (el.Item2.lis.Count() == 1 && el.Item2.lis[0].Item2 == 1 && els[4] == dlinnomerScladId[0] || els[4] == dlinnomerScladId[1] && el.Item2.lis[0].Item3 + els[3] > els[1])
+                else 
+				if (el.Item2.lis.Count() == 1 && 
+					el.Item2.lis[0].Item2 == 1 && 
+					(els[5] == dlinnomerScladId[0] || 
+					els[5] == dlinnomerScladId[1] ||
+					els[5] == dlinnomerScladId[2]) && 
+					el.Item2.lis[0].Item3 + els[3] > els[1])
                 {
                     res.Add(el);
                 }
@@ -73,14 +85,22 @@ namespace Raspil
             return res;
 
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="orders"></param>
-        /// <param name="total"></param>
-        /// <param name="widthWa"></param>
-        /// <returns></returns>
-        private List<(int, CustomList)> calc(int[][] orders, int total, int widthWa = 4)
+		private void CorrectTest( (int, CustomList) list, int len) {
+
+			var res = 0;
+			foreach (var li in list.Item2.lis)
+			{
+				res += li.Item2 * li.Item3;
+			}
+		}
+		/// <summary>
+		/// Подсчет для конкретной длины доски
+		/// </summary>
+		/// <param name="orders"></param>
+		/// <param name="total"></param>
+		/// <param name="widthWa"></param>
+		/// <returns>[(остаток, лист комбинаций)]</returns>
+		private List<(int, CustomList)> Calc(int[][] orders, int total, int widthWa = 4)
         {
 			//this.orders = orders.Select(el => new int[] { el[0], el[1] + widthWa, el[2], el[3] }).ToArray();
 			this.orders = orders;
@@ -88,53 +108,60 @@ namespace Raspil
             // [строка сложенных элементов, остаток от доски]
             conds = new List<(int, CustomList)>();
             int x = 0;
-            Deeper(0, ref x, conds, new CustomList(), 0);
+            Deeper(0, x, conds, new CustomList());
 
-			//28.07.2019 убрал добавочную ширину для доски
 			conds = conds.Select(el =>{
-				return (el.Item1 - widthWa * el.Item2.GetCountItems(), el.Item2);
+			//28.07.2019 убрал добавочную ширину для доски
+				var remain = el.Item1 - widthWa * el.Item2.GetCountItems();
+				if (remain == 15) Console.WriteLine("15");
+				return (remain , new CustomList(el.Item2));
 				
 			}).Where(el => el.Item1 >= 0).ToList();
-
+			
 			return conds;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="depth"></param>
-        /// <param name="currSum"></param>
-        /// <param name="conds"> Массив комбинаций главный </param>
-        /// <param name="condStr"> переформировать в лист</param>
-        /// <param name="counter"></param>
-        private void Deeper(int depth, ref int currSum, List<(int, CustomList)> conds, CustomList cond, int counter)
+		/// <summary>
+		/// Главная рекурсивая функция
+		/// </summary>
+		/// <param name="depth"> Кол-во заказов</param>
+		/// <param name="currSum"> Текущая сумма длин заказов</param>
+		/// <param name="conds"> Главный массив комбинаций  </param>
+		/// <param name="cond"> Карта завазов что в данный момент дают сумму</param>
+		/// <param name="counter"></param>
+		private void Deeper(int depth,  int currSum, List<(int, CustomList)> conds, CustomList cond)
         {
-            var cond2 = new CustomList(cond);
-            //[ "остаток от доски", ["ид заказа", число в доске]]
+           
             if (depth >= orders.Length)
             {
                 return;
             }
+
             for (var i = 0; i <= orders[depth][0]; i++)
             {
-                var s = orders[depth][1] * i + currSum;
+				var cond2 = new CustomList(cond);
+
+				//var s = orders[depth][1] * i + currSum;
+				var s = orders[depth][1] * i + cond.Summlen();
                 if (s > this.total) return;
-                // ид заказа, число досок
+                
                 if (i > 0)
                 {
-                    if (!keyExist(conds, this.total - s))
+                    if (!KeyExist(conds, this.total - s))
                     {
-                        cond2.Add((orders[depth][3], i, orders[depth][1]));
+						// номер строки , кол-во, длина заказа
+						cond2.Add((orders[depth][3], i, orders[depth][1]));
+						// остаток длины , лист распилов
                         conds.Add((this.total - s, cond2));
                     }
 
                 }
-                Deeper(depth + 1, ref s, conds, cond2, counter + i);
+                Deeper(depth + 1,  s, conds, cond2);
             }
 
         }
 
-        private bool keyExist(List<(int, CustomList)> conds, int ostk)
+        private bool KeyExist(List<(int, CustomList)> conds, int ostk)
         {
             foreach (var cn in conds)
             {

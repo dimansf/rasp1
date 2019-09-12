@@ -21,14 +21,14 @@ namespace ClientRaspil
             AppExchangeClient clinet;
            
 
-            var (orders, store) = Generator.GenerateJsonOrderStore();
+            var (orders, store) = Generator.GenerateJsonOrderStore(3);
 
             var xx = new ClientData
             {
                 orders = orders,
                 store = store,
-                widthSaw = 4,
-                algoritm = 1
+                widthSaw = 3,
+                algoritm = 2
             };
 
 			var newData = JsonConvert.SerializeObject(xx);

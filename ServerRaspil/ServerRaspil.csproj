@@ -54,10 +54,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DataGenerator\DataGenerator.csproj">
-      <Project>{db4d19fd-16a2-4c00-bf3c-11072af5ae06}</Project>
-      <Name>DataGenerator</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Raspil\Raspil.csproj">
       <Project>{39c4dc8b-b88b-4ae3-90d6-bd5f7ae5e7b1}</Project>
       <Name>Raspil</Name>

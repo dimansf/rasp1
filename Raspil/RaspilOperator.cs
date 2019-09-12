@@ -13,39 +13,154 @@ namespace Raspil
     {
 		
 		/// <summary>
+		/// Заказы которые нужно уместить в длинномерах
 		///  [id, длина, число]
 		/// </summary>
 		private int[][] orders;
 		/// <summary>
+		/// Сами длинномеры
 		/// [ид, длина, кол - во, ликвид, макс.обр, номер склада]
 		/// </summary>
 		int[][] store;
+		/// <summary>
+		/// Остаток заказов которые вернутся в качестве свойства обьекта
+		/// </summary>
 		public int[][]  ordersRemain = null;
-
+		/// <summary>
+		/// Толщина пила
+		/// </summary>
         private int widthSaw = 4;
 
         
         public RaspilOperator( int[][] orders, int[][] store, int widhtSaw = 4)
         {
             this.orders = orders;
-            this.store = store;
+            this.store = store.Where(el => el[2] > 0).ToArray();
             this.widthSaw = widhtSaw;
         }
+		/// <summary>
+		/// Публичная обертка для алгоритма 1
+		/// </summary>
+		/// <returns></returns>
+		public List<string> Algoritm1()
+		{
+			return (List<string>)_Algoritm1();
+		}
+		/// <summary>
+		/// Алгоритм 1
+		/// Используются длинномеры по ликвидным условиям
+		/// </summary>
+		/// <param name="intern"></param>
+		/// <returns></returns>
+		private object _Algoritm1(bool intern = false)
+		{
+			var raspileMap = new List<List<(int, ((int, int), (int, CustomList)))>>();
+			var k = 0;
+			while (orders.Count() != 0)
+			{
+				//Console.WriteLine($"k = ${k}");
+				//Console.WriteLine($"${orders.Length}");
+				k++;
+				try
+				{
+					// исключить 5 склад из первого расчета, вторым этапом произвести обсчет
+					raspileMap.Add(GetRaspileMap(true, new int[] { 1,2,5 }));
+					DoCut(raspileMap[k - 1]);
+				}
+				catch
+				{
+					try
+					{
+						// если не найдено лучших распилов, значит нужно производить обсчет для палок с 5 склада
+						// иначе они могут вытеснить менее полезные обрезки из 1-4 складов
+						var only5Sclad = store.Where(el => el[5] == 5).ToArray();
+						raspileMap.Add(GetRaspileMap(true, new int[] { 1, 2, 3, 4 }));
+						DoCut(raspileMap[k - 1]);
 
-        /// <summary>
-        /// Сделать обновление для заказов и складов
-        /// Произвести обрезь
-        /// </summary>
-        /// <param name="raspil">(ид доски, ((длина, ид склада), (остаток, распилы)))</param>
-        /// <param name="orders"></param>
-        private void DoCut(List<(int, ((int, int), (int, CustomList)))> raspil)
+						
+					}
+					catch(Exception ex)
+					{
+						NotifyAboutZeroRaspil(ex.Message);
+						break;
+					}
+				}
+				orders = orders.Where(el => el[0] > 0).ToArray();
+			}
+
+			if (intern)
+			{
+				return raspileMap;
+			}
+			var x = HumanReadableMapRaspil(raspileMap);
+			return x;
+		}
+		/// <summary>
+		/// Сначала пытаемся использовать обрезь с условиями ликвидности
+		/// Если обрези не хватило на весь заказ, то
+		/// переходим на Алгоритм 1
+		/// </summary>
+		/// <param name="liqCond"> Учитывать ликвидный остаток</param>
+		/// <returns></returns>
+		public List<string> Algoritm2(bool liqCond = true)
+		{
+			var raspileMap = new List<List<(int, ((int, int), (int, CustomList)))>>();
+			var k = 0;
+			// 3,4,5 склады исключить для первого обсчета
+			// 5 склад будет последним этапом для обсчета 
+			var notSclads = new int[] { 3, 4, 5 };
+
+			while (orders.Count() != 0)
+			{
+				//Console.WriteLine($"k = ${k}");
+				//Console.WriteLine($"${orders.Length}");
+				k++;
+				try
+				{
+					raspileMap.Add(GetRaspileMap(liqCond, notSclads));
+					DoCut(raspileMap[k - 1]);
+				}
+				catch
+				{
+					var alg1Map = (List<List<(int, ((int, int), (int, CustomList)))>>)_Algoritm1(true);
+					ExtendRaspilMap(raspileMap, alg1Map);
+					break;
+				}
+
+
+				orders = orders.Where(el => el[0] > 0).ToArray();
+			}
+			var x = HumanReadableMapRaspil(raspileMap);
+			return x;
+		}
+		/// <summary>
+		/// Сначала пытаемся использовать обрезь с условиями неликвидности
+		/// Если обрези не хватило на весь заказ, то
+		/// переходим на Алгоритм 1
+		/// </summary>
+		/// <param name="orders"></param>
+		/// <param name="store"></param>
+		/// <param name="liqCond"></param>
+		/// <returns></returns>
+		public List<string> Algoritm3(bool liqCond = false)
+		{
+			return Algoritm2(liqCond);
+		}
+		/// <summary>
+		/// Сделать обновление для заказов и складов
+		/// Произвести обрезь
+		/// </summary>
+		/// <param name="raspil">(ид доски, ((длина, ид склада), (остаток, распилы)))</param>
+		/// <param name="orders"></param>
+		private void DoCut(List<(int, ((int, int), (int, CustomList)))> raspil)
         {
-
+			
             foreach (var rasp in raspil)
             {
                 try
                 {
-                    SubtractionOnSclad(rasp.Item2.Item1.Item2, rasp.Item2.Item1.Item1);
+					// (id, (len, Nsclad), (remain, list.lis)
+					SubtractionOnSclad(rasp);
                     // вычитание палок с заказов
                     // ( ид строки, кол-во, длина)
                     foreach (var ors in rasp.Item2.Item2.Item2.lis)
@@ -80,17 +195,23 @@ namespace Raspil
         /// <param name="scladId"></param>
         /// <param name="len"></param>
         /// <returns></returns>
-        private void SubtractionOnSclad(int scladId, int len)
+        private void SubtractionOnSclad((int, ((int, int), (int, CustomList))) element)
         {
+			var (id, len, nSclad) = (element.Item1, element.Item2.Item1.Item1, element.Item2.Item1.Item2);
+			
             foreach (var row in store)
             {
-                if (row[5] == scladId && row[1] == len)
+                if (row[0] == id && 
+					row[1] == len &&
+					row[5] == nSclad)
                 {
                     row[2] -= 1;
+					break;
                    
                 }
-                    
-            }
+				if (row[2] < 0)
+					throw new Exception("Longmeasure from store has negative amount (-1)  from SubtractionOnSclad");
+			}
             
             store = store.Where(row => row[2] > 0).ToArray();
         }
@@ -135,14 +256,12 @@ namespace Raspil
         /// Получаем карту распила
         /// для одной итерации цикла
         /// </summary>
-        /// <param name="orders"></param>
-        /// <param name="store"></param>
         /// <param name="liqCond"></param>
         /// <param name="sclads"></param>
         /// <returns></returns>
         private List<(int, ((int, int), (int, CustomList)))> GetRaspileMap( bool liqCond = true, int[] sclads = null)
         {
-
+		
 
             var mapRaspil = new List<List<(int, (string, int, int))>>();
 
@@ -151,9 +270,10 @@ namespace Raspil
             var unicalID = orders.Select(row => row[2]).Distinct().ToList();
             var res = new Dictionary<int, List<((int, int), List<(int, CustomList)>)>>();
 
+			// обсчет для каждого id 
             unicalID.ForEach(id =>
             {
-                res.Add(id, bt.calculate(
+                res.Add(id, bt.Calculate(
                 orders.Where(el => el[2] == id).ToArray(),
                 store.Where(el => el[0] == id).ToArray(),
                 liqCond,
@@ -161,6 +281,7 @@ namespace Raspil
             });
 
             var ress = new List<(int, ((int, int), (int, CustomList)))>();
+
             foreach (var e in res)
             {
                 ress.Add((e.Key, GetBestComparison(e.Value, sclads)));
@@ -170,84 +291,10 @@ namespace Raspil
             {
                 throw new Exception("Кончились палки на складе длинномеров и заказов длинномеров");
             }
+			
             return x;
         }
-        /// <summary>
-        /// Алгоритм 1: лучшая полезная нагрузка 
-        /// </summary>
-        /// <returns></returns>
-        public List<string> Algoritm1()
-        {
-            return (List<string>)_Algoritm1();
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="intern"></param>
-        /// <returns></returns>
-        private object _Algoritm1(bool intern = false)
-        {
-            var raspileMap = new List<List<(int, ((int, int), (int, CustomList)))>>();
-            var k = 0;
-            while (orders.Count() != 0)
-            {
-                //Console.WriteLine($"k = ${k}");
-                //Console.WriteLine($"${orders.Length}");
-                k++;
-                try
-                {
-                    raspileMap.Add(GetRaspileMap());
-                    DoCut(raspileMap[k - 1]);
-                } catch(Exception ex)
-                {
-                    NotifyAboutZeroRaspil(ex.Message);
-                    break;
-                }
-                
-
-                orders = orders.Where(el => el[0] > 0).ToArray();
-            }
-            if(intern)
-            {
-                return raspileMap;
-            }
-            var x = HumanReadableMapRaspil(raspileMap);
-            return x;
-        }
-		/// <summary>
-		/// Ликвидная обрезь, если кончилась, режем длинномеры по первому алгоритму 
-		/// </summary>
-		/// <param name="liqCond"> Учитывать ликвидный остаток</param>
-		/// <returns></returns>
-        public List<string> Algoritm2( bool liqCond = true)
-        {
-            var raspileMap = new List<List<(int, ((int, int), (int, CustomList)))>>();
-            var k = 0;
-            var notSclads = new int[] { 3, 4 };
-
-            while (orders.Count() != 0)
-            {
-                //Console.WriteLine($"k = ${k}");
-                //Console.WriteLine($"${orders.Length}");
-                k++;
-                try
-                {
-                    raspileMap.Add(GetRaspileMap(liqCond, notSclads));
-                    DoCut(raspileMap[k - 1]);
-                }
-                catch
-                {
-                    var alg1Map = (List<List<(int, ((int, int), (int, CustomList)))>>)_Algoritm1(true);
-                    ExtendRaspilMap(raspileMap, alg1Map);
-                    break;
-                }
-                
-
-                orders = orders.Where(el => el[0] > 0).ToArray();
-            }
-            var x = HumanReadableMapRaspil(raspileMap);
-            return x;
-        }
+       
 		/// <summary>
 		/// Вызвать функцию вывода уведомления на консоль, что кончились палки на складе
 		/// </summary>
@@ -264,17 +311,7 @@ namespace Raspil
 			//ordersRemain = li.ToArray();
 			ordersRemain = orders.Length  != 0 ? orders : null;
         }
-		/// <summary>
-		/// Третий алгоритм неликвидная обрезь по максимуму, как закончится, по первому алгоритму обрези
-		/// </summary>
-		/// <param name="orders"></param>
-		/// <param name="store"></param>
-		/// <param name="liqCond"></param>
-		/// <returns></returns>
-		public List<string> Algoritm3(bool liqCond = false)
-        {
-            return Algoritm2(liqCond);
-        }
+		
         /// <summary>
         /// Расширение Карты распила другой картой
         /// </summary>
