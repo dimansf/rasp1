@@ -85,13 +85,11 @@ namespace Raspil
             return res;
 
         }
-		private void CorrectTest( (int, CustomList) list, int len) {
+		private void CheckValidConds( (int, CustomList) list, int len) {
 
-			var res = 0;
-			foreach (var li in list.Item2.lis)
-			{
-				res += li.Item2 * li.Item3;
-			}
+			if (len - list.Item1 != list.Item2.Summlen())
+				throw new Exception("SummLen not equal CurrSumm");
+			
 		}
 		/// <summary>
 		/// Подсчет для конкретной длины доски
@@ -107,14 +105,15 @@ namespace Raspil
 			this.total = total;
             // [строка сложенных элементов, остаток от доски]
             conds = new List<(int, CustomList)>();
-            int x = 0;
-            Deeper(0, x, conds, new CustomList());
+           
+            Deeper(0, conds, new CustomList(), 0);
 
 			conds = conds.Select(el =>{
-			//28.07.2019 убрал добавочную ширину для доски
-				var remain = el.Item1 - widthWa * el.Item2.GetCountItems();
-				if (remain == 15) Console.WriteLine("15");
-				return (remain , new CustomList(el.Item2));
+				//28.07.2019 убрал добавочную ширину для доски
+				CheckValidConds(el, total);
+
+				return (this.total - el.Item2.Summlen() - widthWa * el.Item2.GetCountItems(), el.Item2);
+				//return (el.Item1 - widthWa * el.Item2.GetCountItems(), new CustomList(el.Item2));
 				
 			}).Where(el => el.Item1 >= 0).ToList();
 			
@@ -129,9 +128,8 @@ namespace Raspil
 		/// <param name="conds"> Главный массив комбинаций  </param>
 		/// <param name="cond"> Карта завазов что в данный момент дают сумму</param>
 		/// <param name="counter"></param>
-		private void Deeper(int depth,  int currSum, List<(int, CustomList)> conds, CustomList cond)
+		private void Deeper(int depth, List<(int, CustomList)> conds, CustomList cond, int currSumm)
         {
-           
             if (depth >= orders.Length)
             {
                 return;
@@ -141,22 +139,23 @@ namespace Raspil
             {
 				var cond2 = new CustomList(cond);
 
-				//var s = orders[depth][1] * i + currSum;
-				var s = orders[depth][1] * i + cond.Summlen();
-                if (s > this.total) return;
+				//var summ = orders[depth][1] * i + currSumm;
+				var summ = orders[depth][1] * i + cond.Summlen();
+				if (summ > this.total) return;
                 
                 if (i > 0)
                 {
-                    if (!KeyExist(conds, this.total - s))
-                    {
+					//if (!KeyExist(conds, this.total - summ))
+					if (true)
+					{
 						// номер строки , кол-во, длина заказа
 						cond2.Add((orders[depth][3], i, orders[depth][1]));
 						// остаток длины , лист распилов
-                        conds.Add((this.total - s, cond2));
+                        conds.Add((this.total - summ, cond2));
                     }
 
                 }
-                Deeper(depth + 1,  s, conds, cond2);
+                Deeper(depth + 1, conds, cond2, summ);
             }
 
         }

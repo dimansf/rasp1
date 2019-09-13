@@ -6,3 +6,4 @@ C:\Users\dimansf\source\repos\Raspil\Net\obj\Debug\Net.csproj.CoreCompileInputs.
 C:\Users\dimansf\source\repos\Raspil\Net\obj\Debug\Net.csproj.CopyComplete
 C:\Users\dimansf\source\repos\Raspil\Net\obj\Debug\Net.dll
 C:\Users\dimansf\source\repos\Raspil\Net\obj\Debug\Net.pdb
+C:\Users\dimansf\source\repos\Raspil\Net\obj\Debug\Net.csprojAssemblyReference.cache

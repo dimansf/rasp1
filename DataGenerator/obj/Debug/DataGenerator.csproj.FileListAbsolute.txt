@@ -6,3 +6,4 @@ C:\Users\dimansf\source\repos\Raspil\DataGenerator\obj\Debug\DataGenerator.cspro
 C:\Users\dimansf\source\repos\Raspil\DataGenerator\obj\Debug\DataGenerator.csproj.CopyComplete
 C:\Users\dimansf\source\repos\Raspil\DataGenerator\obj\Debug\DataGenerator.dll
 C:\Users\dimansf\source\repos\Raspil\DataGenerator\obj\Debug\DataGenerator.pdb
+C:\Users\dimansf\source\repos\Raspil\DataGenerator\obj\Debug\DataGenerator.csprojAssemblyReference.cache

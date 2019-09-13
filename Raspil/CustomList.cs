@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 namespace Raspil
 {
 
-	public class CustomList : ICloneable
+	public class CustomList
 	{
+		static long callCounter = 0;
+		private int lenCounter = 0;
 
 		public List<(int, int, int)> lis = null;
 		/// <summary>
@@ -30,6 +32,7 @@ namespace Raspil
 		public CustomList(CustomList cl)
 		{
 			lis = cl.lis.Select(el => (el.Item1, el.Item2, el.Item3)).ToList();
+			//lenCounter = cl.Summlen();
 		}
 
 		/// <summary>
@@ -46,41 +49,33 @@ namespace Raspil
 			return x;
 		}
 		public int Summlen() {
+			callCounter++;
 			int x = 0;
 			lis.ForEach(tup =>
 			{
-				x += tup.Item3;
+				x += tup.Item3 * tup.Item2;
 			});
+			//return lenCounter;
 			return x;
 		}
 		public void Add((int, int, int) tup)
-        {               //(ид строки, кол-во)
+        {               //(ид строки, кол-во,  длина)
             bool fl = true;
             lis = lis.Select(el => {
                 if (el.Item1 == tup.Item1)
                 {
                     fl = false;
-                    return (el.Item1, tup.Item2, el.Item3);
+					//lenCounter += tup.Item2 * tup.Item3 - el.Item2 * el.Item3;
+					return (el.Item1, tup.Item2, el.Item3);
                 }
                 return el;
             }).ToList();
+
             if (fl)
             {
-                lis.Add(tup);
+				//lenCounter += tup.Item3 * tup.Item2;
+				lis.Add(tup);
             }
         }
-
-		public object Clone()
-		{
-			var x = new CustomList();
-
-			var newLis = lis.Select(el =>
-			{
-				return (el.Item1, el.Item2, el.Item3);
-			}).ToList();
-
-
-			return x;
-		}
 	}
 }

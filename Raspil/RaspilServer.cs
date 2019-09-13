@@ -94,6 +94,8 @@ namespace Raspil
 			//string[] zz = null;
 			int[][] zz = null;
 
+			long milliseconds1 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+
 			switch ((int)data.algoritm)
             {
                 case 1:
@@ -114,6 +116,7 @@ namespace Raspil
                 default:
                     return "{\"алгоритм\": \"Неизвестный алгоритм!\"}";
             }
+			Console.WriteLine(DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond - milliseconds1);
 			// если остаток есть, отрежем последние элементы(это нумерация строк)
 			zz = raspil.ordersRemain != null ? raspil.ordersRemain.Select(el => el.Take(3).ToArray()).ToArray() : null;
 
