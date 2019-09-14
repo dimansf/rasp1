@@ -74,7 +74,9 @@ namespace Raspil
             int[][] store = TransformJArray((JArray)data.store);
 
 
-            int widthSaw = (int)data.widthSaw;
+            var widthSaw = (int)data.widthSaw;
+            var singleFlag = (bool)data.singleFlag;
+			
 
             //добавим  число строк
             int x = 1;
@@ -88,12 +90,12 @@ namespace Raspil
            
            
             // начинаем простраивать карту распила
-            var raspil = new RaspilOperator(order, store, widthSaw);
+            var raspil = new RaspilOperator(order, store, widthSaw, singleFlag);
 
             List<string> xx = null;
 			//string[] zz = null;
 			int[][] zz = null;
-
+			long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 			switch ((int)data.algoritm)
             {
                 case 1:
@@ -114,6 +116,7 @@ namespace Raspil
                 default:
                     return "{\"алгоритм\": \"Неизвестный алгоритм!\"}";
             }
+			Console.WriteLine((DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond - milliseconds).ToString() + "ms");
 			// если остаток есть, отрежем последние элементы(это нумерация строк)
 			zz = raspil.ordersRemain != null ? raspil.ordersRemain.Select(el => el.Take(3).ToArray()).ToArray() : null;
 

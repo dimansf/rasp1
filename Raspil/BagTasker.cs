@@ -18,12 +18,17 @@ namespace Raspil
         /// <summary>
         /// 
         /// </summary>
-        int total;
+        int total = 0;
 
+		bool singleFlag = false;
         /// <summary>
         /// 
         /// </summary>
         List<(int, CustomList)> conds;
+
+		public BagTasker(bool sf = false) {
+			singleFlag = sf;
+		}
 		/// <summary>
 		/// На этом уровне нет id досок, просто заказы и массив складов
 		/// 2 уровень
@@ -32,38 +37,72 @@ namespace Raspil
 		/// <param name="store"></param>
 		/// <param name="liqCondition"></param>
 		/// <returns> (длина доски , ИД склада ), [структура с картой подбора всех заказов]</returns>
-		public List<((int, int), List<(int, CustomList)>)> Calculate(int[][] orders, int[][] store, bool liqCondition = true, int widthSaw = 4)
+		public List<OneStoreCombinations> Calculate(int[][] orders, int[][] store, bool liqCondition = true, int widthSaw = 4)
         {
-            var dat = new List<((int, int), List<(int, CustomList)>)>();
+						//(длина доски, ИД склада),[структура с картой подбора всех заказов]
+			//var dat = new List<((int, int), List<(int, CustomList)>)>();
+			var dat = new List<OneStoreCombinations>();
 			// для каждой  палки на складе в кол-ве  > 0
-			store.Select(el =>
+			store.Select(storeStick =>
             {
                 //[ид, длина, кол - во, ликвид, макс.обр, номер склада]
-                var temp = Calc(orders, el[1], widthSaw);
+                var temp = Calc(orders, storeStick[1], widthSaw);
+
                 if (liqCondition)
                 {
-                    temp = LiqSelect(temp, el);
+                    temp = LiqSelect(temp, storeStick);
                 }
+				if (singleFlag)
+				{
+					temp = SingleSelect(temp, storeStick);
+				}
 				// карта комбинаций для конкретной доски 
 				// длина доски , ИД склада , структура с картой подбора всех заказов
-                dat.Add(((el[1], el[5]), temp));
+				//dat.Add(((el[1], el[5]), temp));
+				dat.Add(new OneStoreCombinations(storeStick[1], storeStick[5], temp));
+				
 
                 return 0;
             }).ToList();
 
             return dat;
         }
-        /// <summary>
-        /// Проверка на условия ликвидности, по 3 и 4 параметра доски скалда
-        /// </summary>
-        /// <param name="combs"></param>
-        /// <param name="liq"></param>
-        /// <param name="obr"></param>
-        /// <returns></returns>
-        private List<(int, CustomList)> LiqSelect(List<(int, CustomList)> combs, int[] els)
+		/// <summary>
+		/// Костыль для показательного(тестового распила)
+		/// </summary>
+		/// <param name="combs"></param>
+		/// <param name="els"></param>
+		/// <returns></returns>
+		private List<(int, CustomList)> SingleSelect(List<(int, CustomList)> combs, int[] els) {
+			var res = new List<(int, CustomList)>();
+			int baseForMin;
+			foreach (var el in combs)
+			{
+				// если палка не длиномер то длину задать искуственно
+				baseForMin = els[1] < 5000 ? 5000 : els[1];
+				// 3 - остаток в мм , 4 - процент
+				if (el.Item1 <= baseForMin / 100 * els[4] &&
+					el.Item2.allSingles())
+				{
+					el.Item2.singleFlag = true;
+					res.Add(el);
+				}
+				
+			}
+			return res;
+		}
+
+		/// <summary>
+		/// Проверка на условия ликвидности, по 3 и 4 параметра доски скалда
+		/// </summary>
+		/// <param name="combs"></param>
+		/// <param name="liq"></param>
+		/// <param name="obr"></param>
+		/// <returns></returns>
+		private List<(int, CustomList)> LiqSelect(List<(int, CustomList)> combs, int[] els)
         {
             var res = new List<(int, CustomList)>();
-			var baseForMin = 0;
+			int baseForMin;
             foreach (var el in combs)
             {
 				// если палка не длиномер то длину задать искуственно
@@ -85,14 +124,7 @@ namespace Raspil
             return res;
 
         }
-		private void CorrectTest( (int, CustomList) list, int len) {
-
-			var res = 0;
-			foreach (var li in list.Item2.lis)
-			{
-				res += li.Item2 * li.Item3;
-			}
-		}
+		
 		/// <summary>
 		/// Подсчет для конкретной длины доски
 		/// </summary>
@@ -107,17 +139,19 @@ namespace Raspil
 			this.total = total;
             // [строка сложенных элементов, остаток от доски]
             conds = new List<(int, CustomList)>();
-            int x = 0;
-            Deeper(0, x, conds, new CustomList());
+            
+            Deeper(0, conds, new CustomList());
 
+			// вычитание толщины пила
 			conds = conds.Select(el =>{
-			//28.07.2019 убрал добавочную ширину для доски
+			
 				var remain = el.Item1 - widthWa * el.Item2.GetCountItems();
-				if (remain == 15) Console.WriteLine("15");
+				
+
 				return (remain , new CustomList(el.Item2));
 				
 			}).Where(el => el.Item1 >= 0).ToList();
-			
+
 			return conds;
         }
 
@@ -129,7 +163,7 @@ namespace Raspil
 		/// <param name="conds"> Главный массив комбинаций  </param>
 		/// <param name="cond"> Карта завазов что в данный момент дают сумму</param>
 		/// <param name="counter"></param>
-		private void Deeper(int depth,  int currSum, List<(int, CustomList)> conds, CustomList cond)
+		private void Deeper(int depth, List<(int, CustomList)> conds, CustomList cond)
         {
            
             if (depth >= orders.Length)
@@ -147,16 +181,16 @@ namespace Raspil
                 
                 if (i > 0)
                 {
-                    if (!KeyExist(conds, this.total - s))
-                    {
+                    //if (!KeyExist(conds, this.total - s))
+					
 						// номер строки , кол-во, длина заказа
-						cond2.Add((orders[depth][3], i, orders[depth][1]));
+						cond2.Add( (orders[depth][3], i, orders[depth][1]) );
 						// остаток длины , лист распилов
                         conds.Add((this.total - s, cond2));
-                    }
+                    
 
                 }
-                Deeper(depth + 1,  s, conds, cond2);
+                Deeper(depth + 1, conds, cond2);
             }
 
         }

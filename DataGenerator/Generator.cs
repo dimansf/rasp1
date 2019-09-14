@@ -345,6 +345,7 @@ namespace DataGenerator
 			public int[][] store;
 			public int widthSaw;
 			public int algoritm;
+			public bool singleFlag;
 
 		}
 
