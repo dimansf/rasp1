@@ -29,7 +29,7 @@ namespace ClientRaspil
                 store = store,
                 widthSaw = 3,
                 algoritm = 2,
-				singleFlag = false
+				singleFlag = true
 			};
 
 			var newData = JsonConvert.SerializeObject(xx);
