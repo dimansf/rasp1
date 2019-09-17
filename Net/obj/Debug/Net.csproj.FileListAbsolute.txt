@@ -1,8 +1,0 @@
-C:\Users\dimansf\source\repos\Raspil\Net\bin\Debug\Net.dll
-C:\Users\dimansf\source\repos\Raspil\Net\bin\Debug\Net.pdb
-C:\Users\dimansf\source\repos\Raspil\Net\bin\Debug\Newtonsoft.Json.dll
-C:\Users\dimansf\source\repos\Raspil\Net\bin\Debug\Newtonsoft.Json.xml
-C:\Users\dimansf\source\repos\Raspil\Net\obj\Debug\Net.csproj.CoreCompileInputs.cache
-C:\Users\dimansf\source\repos\Raspil\Net\obj\Debug\Net.csproj.CopyComplete
-C:\Users\dimansf\source\repos\Raspil\Net\obj\Debug\Net.dll
-C:\Users\dimansf\source\repos\Raspil\Net\obj\Debug\Net.pdb
