@@ -75,7 +75,14 @@ namespace Raspil
 
 
             var widthSaw = (int)data.widthSaw;
-            var singleFlag = (bool)data.singleFlag;
+			bool singleFlag;
+			try
+			{
+				singleFlag = (bool)data.singleFlag;
+			}
+			catch {
+				singleFlag = false;
+			}
 			
 
             //добавим  число строк

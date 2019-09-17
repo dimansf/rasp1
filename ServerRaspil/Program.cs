@@ -70,7 +70,9 @@ namespace ServerRaspil
 				}
 
 			}
-			catch { }
+			catch {
+				Console.WriteLine("Hide parameter is not set");
+			}
 
 			server.RunServer();
 		}

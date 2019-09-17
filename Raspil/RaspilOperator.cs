@@ -331,7 +331,7 @@ namespace Raspil
             {
                 ress.Add((e.Key, GetBestComparison(e.Value, sclads)));
             }
-              var x = ress.Where(el => el.combs.scladId != 0).ToList();
+            var x = ress.Where(el => el.combs.scladId != 0).ToList();
             if (x.Count == 0)
             {
                 throw new Exception("Кончились палки на складе длинномеров и заказов длинномеров");

@@ -47,18 +47,27 @@ namespace Raspil
             {
                 //[ид, длина, кол - во, ликвид, макс.обр, номер склада]
                 var temp = Calc(orders, storeStick[1], widthSaw);
+				List<(int, CustomList)> temp1 = null, temp2 = null;
 
-                if (liqCondition)
+				if (liqCondition)
                 {
-                    temp = LiqSelect(temp, storeStick);
-                }
-				if (singleFlag)
-				{
-					temp = SingleSelect(temp, storeStick);
+                    temp1 = LiqSelect(temp, storeStick);
+					/* как частный случай ликвидного остатка, иначе нет смысла 
+					 была введена для очень специфичного распила, из Generators
+					 оставил пометку
+					*/
+					if (singleFlag)
+					{
+						temp2 = SingleSelect(temp, storeStick);
+					}
+
+					temp = temp2 != null && temp2.Count != 0 ? temp2 : temp1;
+					
 				}
+				
+				
 				// карта комбинаций для конкретной доски 
 				// длина доски , ИД склада , структура с картой подбора всех заказов
-				//dat.Add(((el[1], el[5]), temp));
 				dat.Add(new OneStoreCombinations(storeStick[1], storeStick[5], temp));
 				
 
@@ -144,9 +153,13 @@ namespace Raspil
 
 			// вычитание толщины пила
 			conds = conds.Select(el =>{
-			
+				// частный случай когда доска в точности совпадает с длиной распила и ничего не нужно резать
+				// 2376 - 2376 = 0
+				if (el.Item1 == 0 && el.Item2.GetCountItems() == 1) {
+					return (el.Item1, new CustomList(el.Item2));
+				}
+
 				var remain = el.Item1 - widthWa * el.Item2.GetCountItems();
-				
 
 				return (remain , new CustomList(el.Item2));
 				
