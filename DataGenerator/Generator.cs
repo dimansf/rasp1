@@ -344,8 +344,9 @@ namespace DataGenerator
 			public int[][] orders;
 			public int[][] store;
 			public int widthSaw;
-			public int algoritm;
-			public bool singleFlag;
+			
+			public bool scladMax;
+			public bool optimize;
 
 		}
 

@@ -35,15 +35,23 @@ namespace Raspil
 		/// заказов одинаковое кол-во и все они входят в распил идеально
 		/// </summary>
 		private bool singleFlag = false;
+		private bool optimize = false;
+		private bool scladMax = false;
+		/// <summary>
+		/// Заданный массив порядка
+		/// </summary>
+		private (int[] shortMeasures, int[] longMeasures, int[] stock5, int[] notIn5stock ) preassignOrderArray = 
+			( new[] { 1, 2, 5 }, new[] { 3, 4, 5 }, new[] { 5 }, new[] { 1, 2,3,4 });
 
 		//private bool liqCond = false;
-		public RaspilOperator( int[][] orders, int[][] store, int widhtSaw = 4, bool singleFlag = false)
+		public RaspilOperator( int[][] orders, int[][] store, int widhtSaw = 4, bool optimize=false, bool scladMax=false, bool singleFlag = false)
         {
             this.orders = orders;
             this.store = store.Where(el => el[2] > 0).ToArray();
             this.widthSaw = widhtSaw;
 			this.singleFlag = singleFlag;
-
+			this.optimize = optimize;
+			this.scladMax = scladMax;
 		}
 		/// <summary>
 		/// Публичная обертка для алгоритма 1
@@ -65,32 +73,37 @@ namespace Raspil
 			var k = 0;
 			while (orders.Count() != 0)
 			{
-				//Console.WriteLine($"k = ${k}");
-				//Console.WriteLine($"${orders.Length}");
 				k++;
+				// 1 of 3
 				try
-				{
-					// исключить 5 склад из первого расчета, вторым этапом произвести обсчет
-					raspileMap.Add(GetRaspileMap(true, new int[] { 1,2,5 }));
+				{	// 1,2,5 or 3,4,5
+					raspileMap.Add(GetRaspileMap(scladMax ? preassignOrderArray.shortMeasures : preassignOrderArray.longMeasures));
 					DoCut(raspileMap[k - 1]);
 				}
 				catch
 				{
+					// 2 of 3
 					try
 					{
-						// если не найдено лучших распилов, значит нужно производить обсчет для палок с 5 склада
-						// иначе они могут вытеснить менее полезные обрезки из 1-4 складов
-						var only5Sclad = store.Where(el => el[5] == 5).ToArray();
-						raspileMap.Add(GetRaspileMap(true, new int[] { 1, 2, 3, 4 }));
+						raspileMap.Add(GetRaspileMap(!scladMax ? preassignOrderArray.shortMeasures : preassignOrderArray.longMeasures));
 						DoCut(raspileMap[k - 1]);
+					}
+					catch
+					{
+						// 3 of 3
+						try
+						{
+							raspileMap.Add(GetRaspileMap(preassignOrderArray.notIn5stock));
+							DoCut(raspileMap[k - 1]);
+						}
+						catch (Exception ex)
+						{
+							NotifyAboutZeroRaspil(ex.Message);
+							break;
+						}
+					}
 
 						
-					}
-					catch(Exception ex)
-					{
-						NotifyAboutZeroRaspil(ex.Message);
-						break;
-					}
 				}
 				orders = orders.Where(el => el[0] > 0).ToArray();
 			}
@@ -109,37 +122,37 @@ namespace Raspil
 		/// </summary>
 		/// <param name="liqCond"> Учитывать ликвидный остаток</param>
 		/// <returns></returns>
-		public List<string> Algoritm2(bool liqCond = true)
-		{
-			var raspileMap = new List<List<(int, OneStoreCombinations)>>();
-			var k = 0;
-			// 3,4,5 склады исключить для первого обсчета
-			// 5 склад будет последним этапом для обсчета 
-			var notSclads = new int[] { 3, 4, 5 };
+		//public List<string> Algoritm2(bool liqCond = true)
+		//{
+		//	var raspileMap = new List<List<(int, OneStoreCombinations)>>();
+		//	var k = 0;
+		//	// 3,4,5 склады исключить для первого обсчета
+		//	// 5 склад будет последним этапом для обсчета 
+		//	var notSclads = new int[] { 3, 4, 5 };
 
-			while (orders.Count() != 0)
-			{
-				//Console.WriteLine($"k = ${k}");
-				//Console.WriteLine($"${orders.Length}");
-				k++;
-				try
-				{
-					raspileMap.Add(GetRaspileMap(liqCond, notSclads));
-					DoCut(raspileMap[k - 1]);
-				}
-				catch
-				{
-					var alg1Map = (List<List<(int, OneStoreCombinations)>>)_Algoritm1(true);
-					ExtendRaspilMap(raspileMap, alg1Map);
-					break;
-				}
+		//	while (orders.Count() != 0)
+		//	{
+		//		//Console.WriteLine($"k = ${k}");
+		//		//Console.WriteLine($"${orders.Length}");
+		//		k++;
+		//		try
+		//		{
+		//			raspileMap.Add(GetRaspileMap(liqCond, notSclads));
+		//			DoCut(raspileMap[k - 1]);
+		//		}
+		//		catch
+		//		{
+		//			var alg1Map = (List<List<(int, OneStoreCombinations)>>)_Algoritm1(true);
+		//			ExtendRaspilMap(raspileMap, alg1Map);
+		//			break;
+		//		}
 
 
-				orders = orders.Where(el => el[0] > 0).ToArray();
-			}
-			var x = HumanReadableMapRaspil(raspileMap);
-			return x;
-		}
+		//		orders = orders.Where(el => el[0] > 0).ToArray();
+		//	}
+		//	var x = HumanReadableMapRaspil(raspileMap);
+		//	return x;
+		//}
 		/// <summary>
 		/// Сначала пытаемся использовать обрезь с условиями неликвидности
 		/// Если обрези не хватило на весь заказ, то
@@ -149,10 +162,10 @@ namespace Raspil
 		/// <param name="store"></param>
 		/// <param name="liqCond"></param>
 		/// <returns></returns>
-		public List<string> Algoritm3(bool liqCond = false)
-		{
-			return Algoritm2(liqCond);
-		}
+		//public List<string> Algoritm3(bool liqCond = false)
+		//{
+		//	return Algoritm2(liqCond);
+		//}
 		/// <summary>
 		/// Сделать обновление для заказов и складов
 		/// Произвести обрезь
@@ -228,66 +241,66 @@ namespace Raspil
         /// <param name="palki"></param>
         /// <param name="notnumSclad"></param>
         /// <returns></returns>
-        private OneStoreCombinations GetBestComparison(List<OneStoreCombinations> palki, int[] notnumSclad = null)
+        private OneStoreCombinations GetBestComparison(List<OneStoreCombinations> palki)
         {
-            notnumSclad = notnumSclad != null ? notnumSclad : new int[0];
+            
             var goodLen = 0;
             var bestList = ( 0, combinations: new CustomList());
+			var stickCount = 0;
             var bestPalka = (lenght: 0, scladid: 0);
 			var lis = new List<(int, CustomList)>();
 
-			if (singleFlag)
-			{
+			//if (singleFlag)
+			//{
+			//	foreach (var palka in palki)
+			//	{
+			//		foreach (var combs in palka.combinations)
+			//		{
+			//			if (Array.IndexOf(notnumSclad, palka.scladId) == -1)
+			//			{
+							
+			//				if (combs.list.singleFlag &&
+			//					goodLen < palka.lenght - combs.remain ||
+			//					goodLen == palka.lenght - combs.remain && bestPalka.lenght > palka.lenght)
+			//				{
+			//					// переписываем полезную нагрузку
+			//					goodLen = palka.lenght - combs.remain;
+			//					// лист комбинаций
+			//					bestList = combs;
+			//					// длина, номер склада
+			//					bestPalka = (palka.lenght, palka.scladId);
+			//				}
+
+			//			}
+			//		}
+			//	}
+			//	lis.Add(bestList);
+
+			//	return new OneStoreCombinations(bestPalka.lenght, bestPalka.scladid, lis);
+			//}
+			//else {
 				foreach (var palka in palki)
 				{
 					foreach (var combs in palka.combinations)
 					{
-						if (Array.IndexOf(notnumSclad, palka.scladId) == -1)
-						{
-							
-							if (combs.list.singleFlag &&
-								goodLen < palka.lenght - combs.remain ||
+					
+					if (combs.list.GetCountItems() >= stickCount)
+					{
+						if (goodLen < palka.lenght - combs.remain ||
 								goodLen == palka.lenght - combs.remain && bestPalka.lenght > palka.lenght)
-							{
-								// переписываем полезную нагрузку
-								goodLen = palka.lenght - combs.remain;
-								// лист комбинаций
-								bestList = combs;
-								// длина, номер склада
-								bestPalka = (palka.lenght, palka.scladId);
-							}
-
+						{
+							// переписываем полезную нагрузку
+							goodLen = palka.lenght - combs.remain;
+							// лист комбинаций
+							bestList = combs;
+							// длина, номер склада
+							bestPalka = (palka.lenght, palka.scladId);
 						}
 					}
-				}
-				lis.Add(bestList);
-
-				return new OneStoreCombinations(bestPalka.lenght, bestPalka.scladid, lis);
-			}
-			else {
-				foreach (var palka in palki)
-				{
-					foreach (var combs in palka.combinations)
-					{
-						if (Array.IndexOf(notnumSclad, palka.scladId) == -1)
-						{
-							
-							if (goodLen < palka.lenght - combs.remain ||
-								goodLen == palka.lenght - combs.remain && bestPalka.lenght > palka.lenght)
-							{
-								// переписываем полезную нагрузку
-								goodLen = palka.lenght - combs.remain;
-								// лист комбинаций
-								bestList = combs;
-								// длина, номер склада
-								bestPalka = (palka.lenght, palka.scladId);
-							}
-
-						}
 					}
 				}
             
-            }
+            //}
 			
 			lis.Add(bestList);
 
@@ -302,13 +315,13 @@ namespace Raspil
         /// <param name="liqCond"></param>
         /// <param name="sclads"></param>
         /// <returns></returns>
-        private List<(int, OneStoreCombinations)> GetRaspileMap( bool liqCond = true, int[] sclads = null)
+        private List<(int, OneStoreCombinations)> GetRaspileMap(int[] exceptionedStock=null)
         {
 		
 
             var mapRaspil = new List<List<(int, (string, int, int))>>();
 
-            var bt = new BagTasker(singleFlag);
+            var bt = new BagTasker();
 
             var unicalID = orders.Select(row => row[2]).Distinct().ToList();
 								// id , лист комбинаций палок с этим id
@@ -318,18 +331,20 @@ namespace Raspil
             unicalID.ForEach(id =>
             {
                 res.Add(id, bt.Calculate(
-                orders.Where(el => el[2] == id).ToArray(),
-                store.Where(el => el[0] == id).ToArray(),
-                liqCond,
-                widthSaw));
-            });
+				orders.Where(el => el[2] == id).ToArray(),
+				store.Where(el => el[0] == id && Array.IndexOf(exceptionedStock, el[5]) == -1).ToArray(),
+				getPercentParam(id),
+				widthSaw,
+				optimize
+				));
+			});
 
             //var ress = new List<(int, ((int, int), (int, CustomList)))>();
             var ress = new List<(int remain, OneStoreCombinations combs)>();
 
             foreach (var e in res)
             {
-                ress.Add((e.Key, GetBestComparison(e.Value, sclads)));
+                ress.Add((e.Key, GetBestComparison(e.Value)));
             }
             var x = ress.Where(el => el.combs.scladId != 0).ToList();
             if (x.Count == 0)
@@ -339,12 +354,16 @@ namespace Raspil
 			
             return x;
         }
-       
+
+		private int getPercentParam(int id) {
+			return store.Where(el => el[0] == id && el[1] > 5000).ToArray()[0][4];
+		}
+		
 		/// <summary>
 		/// Вызвать функцию вывода уведомления на консоль, что кончились палки на складе
 		/// </summary>
 		/// <param name="text"></param>
-        private void NotifyAboutZeroRaspil(string text)
+		private void NotifyAboutZeroRaspil(string text)
         {
             Console.WriteLine(text);
 

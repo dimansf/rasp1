@@ -75,13 +75,15 @@ namespace Raspil
 
 
             var widthSaw = (int)data.widthSaw;
-			bool singleFlag;
+			bool optimize, scladMax;
 			try
 			{
-				singleFlag = (bool)data.singleFlag;
+				optimize = (bool)data.optimize;
+				scladMax = (bool)data.scladMax;
 			}
 			catch {
-				singleFlag = false;
+				optimize = false;
+				scladMax = false;
 			}
 			
 
@@ -97,32 +99,14 @@ namespace Raspil
            
            
             // начинаем простраивать карту распила
-            var raspil = new RaspilOperator(order, store, widthSaw, singleFlag);
+            var raspil = new RaspilOperator(order, store, widthSaw, optimize, scladMax);
 
             List<string> xx = null;
 			//string[] zz = null;
 			int[][] zz = null;
 			long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-			switch ((int)data.algoritm)
-            {
-                case 1:
-                    {
-                        xx = raspil.Algoritm1();
-                        break;
-                    }
-                case 2:
-                    {
-                        xx = raspil.Algoritm2();
-                        break;
-                    }
-                case 3:
-                    {
-                        xx = raspil.Algoritm3();
-                        break;
-                    }
-                default:
-                    return "{\"алгоритм\": \"Неизвестный алгоритм!\"}";
-            }
+			xx = raspil.Algoritm1();
+			
 			Console.WriteLine((DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond - milliseconds).ToString() + "ms");
 			// если остаток есть, отрежем последние элементы(это нумерация строк)
 			zz = raspil.ordersRemain != null ? raspil.ordersRemain.Select(el => el.Take(3).ToArray()).ToArray() : null;
