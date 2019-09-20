@@ -40,8 +40,8 @@ namespace Raspil
 		/// <summary>
 		/// Заданный массив порядка
 		/// </summary>
-		private (int[] shortMeasures, int[] longMeasures, int[] stock5, int[] notIn5stock ) preassignOrderArray = 
-			( new[] { 1, 2, 5 }, new[] { 3, 4, 5 }, new[] { 5 }, new[] { 1, 2,3,4 });
+		private (int[] shortMeasures, int[] longMeasures, int[] stock5, int[] lmWithout5) preassignOrderArray = 
+			( new[] { 1, 2 }, new[] { 3, 4, 5 }, new[] { 5 }, new[] { 3, 4 });
 
 		//private bool liqCond = false;
 		public RaspilOperator( int[][] orders, int[][] store, int widhtSaw = 4, bool optimize=false, bool scladMax=false, bool singleFlag = false)
@@ -64,6 +64,12 @@ namespace Raspil
 		/// <summary>
 		/// Алгоритм 1
 		/// Используются длинномеры по ликвидным условиям
+		/// 
+		/// Тогда без галки "склад" схема такая
+		/// берутся палки с 3,4,5 складов, и начинает считать лучшую карту распила
+		/// с галочкой "максимум склад" он начинает с 1,2 склада, когда ничего не будет подходить под условия,
+		/// переключится на 3,4 склады, если и там окажется недостаточно, переключится на 5 склад
+		/// , и окончательно составил полную карту
 		/// </summary>
 		/// <param name="intern"></param>
 		/// <returns></returns>
@@ -76,7 +82,7 @@ namespace Raspil
 				k++;
 				// 1 of 3
 				try
-				{	// 1,2,5 or 3,4,5
+				{	// 1,2 or 3,4,5
 					raspileMap.Add(GetRaspileMap(scladMax ? preassignOrderArray.shortMeasures : preassignOrderArray.longMeasures));
 					DoCut(raspileMap[k - 1]);
 				}
@@ -85,7 +91,7 @@ namespace Raspil
 					// 2 of 3
 					try
 					{
-						raspileMap.Add(GetRaspileMap(!scladMax ? preassignOrderArray.shortMeasures : preassignOrderArray.longMeasures));
+						raspileMap.Add(GetRaspileMap(preassignOrderArray.lmWithout5));
 						DoCut(raspileMap[k - 1]);
 					}
 					catch
@@ -93,7 +99,7 @@ namespace Raspil
 						// 3 of 3
 						try
 						{
-							raspileMap.Add(GetRaspileMap(preassignOrderArray.notIn5stock));
+							raspileMap.Add(GetRaspileMap(preassignOrderArray.stock5));
 							DoCut(raspileMap[k - 1]);
 						}
 						catch (Exception ex)
@@ -287,7 +293,8 @@ namespace Raspil
 					if (combs.list.GetCountItems() >= stickCount)
 					{
 						if (goodLen < palka.lenght - combs.remain ||
-								goodLen == palka.lenght - combs.remain && bestPalka.lenght > palka.lenght)
+							goodLen == palka.lenght - combs.remain && bestPalka.lenght > palka.lenght ||
+							goodLen == palka.lenght - combs.remain && bestPalka.scladid > palka.scladId)
 						{
 							// переписываем полезную нагрузку
 							goodLen = palka.lenght - combs.remain;
@@ -332,7 +339,7 @@ namespace Raspil
             {
                 res.Add(id, bt.Calculate(
 				orders.Where(el => el[2] == id).ToArray(),
-				store.Where(el => el[0] == id && Array.IndexOf(exceptionedStock, el[5]) == -1).ToArray(),
+				store.Where(el => el[0] == id && Array.IndexOf(exceptionedStock, el[5]) != -1).ToArray(),
 				getPercentParam(id),
 				widthSaw,
 				optimize
