@@ -40,7 +40,7 @@ namespace ClientRaspil
 		}
 		private static void prog2(string[] args)
 		{
-			MainAction(args, Generator.case1);
+			MainAction(args, Generator.case2);
 
 		}
 

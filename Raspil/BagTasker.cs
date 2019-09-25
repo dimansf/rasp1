@@ -127,7 +127,8 @@ namespace Raspil
                     res.Add(el);
                 else 
 				if (el.Item2.GetCountItems() == 1 && 
-					el.Item2.Summlen() < els[1])
+					els[5] > 2 &&
+					el.Item2.Summlen()*2 > els[1])
                 {
                     res.Add(el);
                 }
