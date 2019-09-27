@@ -40,8 +40,8 @@ namespace Raspil
 		/// <summary>
 		/// Заданный массив порядка
 		/// </summary>
-		private (int[] shortMeasures, int[] longMeasures, int[] stock5, int[] stock4) preassignOrderArray = 
-			( new[] { 1, 2, 3 }, new[] { 3, 4, 5 }, new[] { 5 }, new[] { 4 });
+		private (int[] shortMeasures, int[] longMeasures, int[] stock5, int[] stock4, int[] all, int[] stock3) preassignOrderArray = 
+			( new[] { 1, 2 }, new[] { 3, 4, 5 }, new[] { 5 }, new[] { 4 }, new[] { 1,2,3,4,5 }, new[] { 3 });
 
 		//private bool liqCond = false;
 		public RaspilOperator( int[][] orders, int[][] store, int widhtSaw = 4, bool optimize=false, bool scladMax=false, bool singleFlag = false)
@@ -83,7 +83,7 @@ namespace Raspil
 				// 1 of 3
 				try
 				{	// 1,2 or 3,4,5
-					raspileMap.Add(GetRaspileMap(scladMax ? preassignOrderArray.shortMeasures : preassignOrderArray.longMeasures));
+					raspileMap.Add(GetRaspileMap(scladMax ? preassignOrderArray.shortMeasures : preassignOrderArray.all));
 					DoCut(raspileMap[k - 1]);
 				}
 				catch
@@ -91,7 +91,7 @@ namespace Raspil
 					// 2 of 3
 					try
 					{
-						raspileMap.Add(GetRaspileMap(preassignOrderArray.stock4));
+						raspileMap.Add(GetRaspileMap(preassignOrderArray.stock3));
 						DoCut(raspileMap[k - 1]);
 					}
 					catch
@@ -99,17 +99,23 @@ namespace Raspil
 						// 3 of 3
 						try
 						{
-							raspileMap.Add(GetRaspileMap(preassignOrderArray.stock5));
+							raspileMap.Add(GetRaspileMap(preassignOrderArray.stock4));
 							DoCut(raspileMap[k - 1]);
 						}
-						catch (Exception ex)
+						catch 
 						{
-							NotifyAboutZeroRaspil(ex.Message);
-							break;
+							try
+							{
+								raspileMap.Add(GetRaspileMap(preassignOrderArray.stock5));
+								DoCut(raspileMap[k - 1]);
+							}
+							catch (Exception ex) {
+								NotifyAboutZeroRaspil(ex.Message);
+								break;
+							}
+							
 						}
 					}
-
-						
 				}
 				orders = orders.Where(el => el[0] > 0).ToArray();
 			}
