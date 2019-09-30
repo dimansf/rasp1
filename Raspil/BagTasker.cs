@@ -40,7 +40,7 @@ namespace Raspil
 		/// <param name="store"></param>
 		/// <param name="liqCondition"></param>
 		/// <returns> (длина доски , ИД склада ), [структура с картой подбора всех заказов]</returns>
-		public List<OneStoreCombinations> Calculate(int[][] orders, int[][] store, int percentage = 5, int widthSaw=0, bool liqCondition=false)
+		public List<OneStoreCombinations> Calculate(int[][] orders, int[][] store, int longMeaser = 6000, int widthSaw=0, bool liqCondition=false)
         {
 						//(длина доски, ИД склада),[структура с картой подбора всех заказов]
 			//var dat = new List<((int, int), List<(int, CustomList)>)>();
@@ -54,7 +54,7 @@ namespace Raspil
 				// 2
 				if (liqCondition)
 				{
-					temp = LiqSelect(temp, storeStick, percentage);
+					temp = LiqSelect(temp, storeStick, longMeaser);
 				}
 				// карта комбинаций для конкретной доски 
 				// длина доски , ИД склада , структура с картой подбора всех заказов
@@ -114,14 +114,14 @@ namespace Raspil
 		/// <param name="liq"></param>
 		/// <param name="obr"></param>
 		/// <returns></returns>
-		private List<(int, CustomList)> LiqSelect(List<(int, CustomList)> combs, int[] els, int persentage)
+		private List<(int, CustomList)> LiqSelect(List<(int, CustomList)> combs, int[] els, int longMeaser)
         {
             var res = new List<(int, CustomList)>();
 			int baseForMin;
             foreach (var el in combs)
             {
 				// если палка не длиномер то длину задать искуственно
-				baseForMin = els[1] < 5000 ? persentage : els[1];
+				baseForMin = els[1] > 5000 ? els[1]: longMeaser;
 				// 3 - остаток в мм , 4 - процент
 				if (el.Item1 >= els[3] || el.Item1 <= baseForMin / 100 * els[4])
                     res.Add(el);

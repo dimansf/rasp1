@@ -262,41 +262,13 @@ namespace Raspil
             var bestPalka = (lenght: 0, scladid: 0);
 			var lis = new List<(int, CustomList)>();
 
-			//if (singleFlag)
-			//{
-			//	foreach (var palka in palki)
-			//	{
-			//		foreach (var combs in palka.combinations)
-			//		{
-			//			if (Array.IndexOf(notnumSclad, palka.scladId) == -1)
-			//			{
-							
-			//				if (combs.list.singleFlag &&
-			//					goodLen < palka.lenght - combs.remain ||
-			//					goodLen == palka.lenght - combs.remain && bestPalka.lenght > palka.lenght)
-			//				{
-			//					// переписываем полезную нагрузку
-			//					goodLen = palka.lenght - combs.remain;
-			//					// лист комбинаций
-			//					bestList = combs;
-			//					// длина, номер склада
-			//					bestPalka = (palka.lenght, palka.scladId);
-			//				}
-
-			//			}
-			//		}
-			//	}
-			//	lis.Add(bestList);
-
-			//	return new OneStoreCombinations(bestPalka.lenght, bestPalka.scladid, lis);
-			//}
-			//else {
+			
 				foreach (var palka in palki)
 				{
 					foreach (var combs in palka.combinations)
 					{
-					
-					if (combs.list.GetCountItems() >= stickCount)
+						// выключим условие по числу палок
+					if (true || combs.list.GetCountItems() >= stickCount)
 					{
 						if (goodLen < palka.lenght - combs.remain ||
 							goodLen == palka.lenght - combs.remain && bestPalka.lenght > palka.lenght ||
@@ -346,7 +318,7 @@ namespace Raspil
                 res.Add(id, bt.Calculate(
 				orders.Where(el => el[2] == id).ToArray(),
 				store.Where(el => el[0] == id && Array.IndexOf(exceptionedStock, el[5]) != -1).ToArray(),
-				getPercentParam(id),
+				getLongtParam(id),
 				widthSaw,
 				optimize
 				));
@@ -368,8 +340,8 @@ namespace Raspil
             return x;
         }
 
-		private int getPercentParam(int id) {
-			return store.Where(el => el[0] == id && el[1] > 5000).ToArray()[0][4];
+		private int getLongtParam(int id) {
+			return store.Where(el => el[0] == id && el[1] > 5000 && el[5] != 1 && el[5] != 2).ToArray()[0][1];
 		}
 		
 		/// <summary>
