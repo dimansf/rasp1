@@ -74,7 +74,18 @@ namespace Raspil
             int[][] store = TransformJArray((JArray)data.store);
 
 
-            int widthSaw = (int)data.widthSaw;
+            var widthSaw = (int)data.widthSaw;
+			bool optimize, scladMax;
+			try
+			{
+				optimize = (bool)data.optimize;
+				scladMax = (bool)data.scladMax;
+			}
+			catch {
+				optimize = false;
+				scladMax = false;
+			}
+			
 
             //добавим  число строк
             int x = 1;
@@ -88,35 +99,15 @@ namespace Raspil
            
            
             // начинаем простраивать карту распила
-            var raspil = new RaspilOperator(order, store, widthSaw);
+            var raspil = new RaspilOperator(order, store, widthSaw, optimize, scladMax);
 
             List<string> xx = null;
 			//string[] zz = null;
 			int[][] zz = null;
-
-			long milliseconds1 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-
-			switch ((int)data.algoritm)
-            {
-                case 1:
-                    {
-                        xx = raspil.Algoritm1();
-                        break;
-                    }
-                case 2:
-                    {
-                        xx = raspil.Algoritm2();
-                        break;
-                    }
-                case 3:
-                    {
-                        xx = raspil.Algoritm3();
-                        break;
-                    }
-                default:
-                    return "{\"алгоритм\": \"Неизвестный алгоритм!\"}";
-            }
-			Console.WriteLine(DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond - milliseconds1);
+			long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+			xx = raspil.Algoritm1();
+			
+			Console.WriteLine((DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond - milliseconds).ToString() + "ms");
 			// если остаток есть, отрежем последние элементы(это нумерация строк)
 			zz = raspil.ordersRemain != null ? raspil.ordersRemain.Select(el => el.Take(3).ToArray()).ToArray() : null;
 

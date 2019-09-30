@@ -54,8 +54,7 @@ namespace ServerRaspil
 			RaspilServer server;
 			try
 			{
-				server = new RaspilServer(args[0]);
-
+				server = new RaspilServer(args[1]);
 			}
 			catch
 			{
@@ -63,14 +62,18 @@ namespace ServerRaspil
 			}
 			try
 			{
-				if (args[1] == "hide")
+				if (args[0] == "show")
 				{
 					var win = GetConsoleWindow();
-					ShowWindow(win, SW_HIDE);
+					ShowWindow(win, SW_SHOW);
 				}
-
+				
 			}
-			catch { }
+			catch {
+				Console.WriteLine("show parameter is not set");
+				var win = GetConsoleWindow();
+				ShowWindow(win, SW_HIDE);
+			}
 
 			server.RunServer();
 		}

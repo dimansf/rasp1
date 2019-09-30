@@ -7,23 +7,16 @@ using System.Threading.Tasks;
 namespace Raspil
 {
 
-	public class CustomList
+	public class CustomList 
 	{
-		static long callCounter = 0;
-		private int lenCounter = 0;
 
-		public List<(int, int, int)> lis = null;
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="x">номер строки в заказе</param>
-		/// <param name="y">кол-во</param>
-		/// <param name="z">длина</param>
-		public CustomList(int x, int y, int z)
-		{
-			lis = new List<(int, int, int)>();
-			this.Add((x, y, z));
-		}
+		public List<(int lineNumber, int amount , int lenght)> lis = null;
+
+		public bool singleFlag  = false;
+
+		
+		
+
 		public CustomList()
 		{
 			lis = new List<(int, int, int)>();
@@ -32,7 +25,7 @@ namespace Raspil
 		public CustomList(CustomList cl)
 		{
 			lis = cl.lis.Select(el => (el.Item1, el.Item2, el.Item3)).ToList();
-			//lenCounter = cl.Summlen();
+			singleFlag = cl.singleFlag;
 		}
 
 		/// <summary>
@@ -44,38 +37,77 @@ namespace Raspil
 			int x = 0;
 			lis.ForEach(tup =>
 			{
-				x += tup.Item2;
+				x += tup.amount;
 			});
 			return x;
 		}
+		/// <summary>
+		/// Общая длина палок
+		/// </summary>
+		/// <returns></returns>
 		public int Summlen() {
-			callCounter++;
 			int x = 0;
 			lis.ForEach(tup =>
 			{
-				x += tup.Item3 * tup.Item2;
+				x += tup.lenght * tup.amount;
 			});
-			//return lenCounter;
 			return x;
 		}
-		public void Add((int, int, int) tup)
-        {               //(ид строки, кол-во,  длина)
+
+		public int SummlenSingle() {
+			int x = 0;
+			lis.ForEach(tup =>
+			{
+				x += tup.lenght;
+			});
+			return x;
+		}
+		/// <summary>
+		/// Все ли палки в одном экземпляре
+		/// </summary>
+		/// <returns></returns>
+		public bool allSingles() {
+			bool fl = true;
+			lis.ForEach(el => {
+				if (el.amount != 1)
+					fl = false;
+			});
+			return fl;
+		}
+		public void Add((int lineNumber, int amount, int lenght) tup)
+        {               //(ид строки, кол-во)
             bool fl = true;
             lis = lis.Select(el => {
-                if (el.Item1 == tup.Item1)
+                if (el.lineNumber == tup.lineNumber)
                 {
                     fl = false;
-					//lenCounter += tup.Item2 * tup.Item3 - el.Item2 * el.Item3;
-					return (el.Item1, tup.Item2, el.Item3);
+                    return (el.lineNumber, tup.amount, el.lenght);
                 }
                 return el;
             }).ToList();
-
             if (fl)
             {
-				//lenCounter += tup.Item3 * tup.Item2;
-				lis.Add(tup);
+                lis.Add(tup);
             }
         }
+
+		
+	}
+
+	public class OneStoreCombinations
+	{
+		/// <summary>
+		/// (остаток от доски, карта элементов)
+		/// </summary>
+		public List<(int remain, CustomList list)>  combinations;
+		public int lenght;
+		public int scladId;
+
+		public OneStoreCombinations(int lenght, int scladId, List<(int, CustomList)> combinations)
+		{
+			this.lenght = lenght;
+			this.scladId = scladId;
+			this.combinations = combinations;
+		}
 	}
 }
