@@ -341,7 +341,14 @@ namespace Raspil
         }
 
 		private int getLongtParam(int id) {
-			return store.Where(el => el[0] == id && el[1] > 5000 && el[5] != 1 && el[5] != 2).ToArray()[0][1];
+			try
+			{
+				return store.Where(el => el[5] == 5 && el[0] == id).ToArray()[0][1];
+			}
+			catch 
+			{
+				return 6000;
+			}
 		}
 		
 		/// <summary>

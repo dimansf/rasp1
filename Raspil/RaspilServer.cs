@@ -49,9 +49,18 @@ namespace Raspil
                 catch (Exception ex)
                 {
                     WriteLog(ex.Message);
-                    serv.SendString(ex.Message);
-                    serv.Close();
-                    continue;
+					try
+					{
+
+						serv.SendString(ex.Message);
+						serv.Close();
+					}
+					catch
+					{
+						continue;
+					}
+					continue;
+                    
                 }
             }
 

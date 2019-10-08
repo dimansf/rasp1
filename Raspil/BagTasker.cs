@@ -77,7 +77,9 @@ namespace Raspil
 
 				var remain = el.Item1 - widthSaw * el.Item2.GetCountItems();
 
-				return remain == -widthSaw ? (0, new CustomList(el.Item2)): (remain, new CustomList(el.Item2));
+				return remain >= -widthSaw ? 
+				(remain > 0 ? remain : 0, new CustomList(el.Item2)): 
+				(remain, new CustomList(el.Item2));
 
 			}).Where(el => el.Item1 >= 0).ToList();
 		}

@@ -3,7 +3,9 @@ using DataGenerator;
 using Net;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.IO;
+using System.Linq;
 
 namespace ClientRaspil
 {
@@ -55,7 +57,11 @@ namespace ClientRaspil
 		private static void prog3(string[] args)
 		{
 			var path = Directory.GetCurrentDirectory();
-			MainAction(args, File.ReadAllText(Path.Combine(path, "../../resources/json1.txt")));
+			var myArryList = new ArrayList();
+			myArryList.AddRange(args);
+			myArryList.Insert(1, "49770");
+			//MainAction(args, File.ReadAllText(Path.Combine(path, "../../resources/json1.txt")));
+			MainAction(myArryList.ToArray().Select(els => els.ToString()).ToArray(), File.ReadAllText(Path.Combine(path, myArryList[2].ToString())));
 
 		}
 
@@ -79,7 +85,7 @@ namespace ClientRaspil
 			d = clinet.Receive();
 			//File.AppendAllText(Path.Combine(Directory.GetCurrentDirectory(), "out.txt"), d + "\n");
 			Console.WriteLine(d);
-			Console.ReadLine();
+			//Console.ReadLine();
 		}
 		
 
