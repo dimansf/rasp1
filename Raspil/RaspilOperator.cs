@@ -256,9 +256,9 @@ namespace Raspil
         private OneStoreCombinations GetBestComparison(List<OneStoreCombinations> palki)
         {
             
-            var goodLen = 0;
+            var goodLen = 0.0;
             var bestList = ( 0, combinations: new CustomList());
-			var stickCount = 0;
+			
             var bestPalka = (lenght: 0, scladid: 0);
 			var lis = new List<(int, CustomList)>();
 
@@ -267,21 +267,20 @@ namespace Raspil
 				{
 					foreach (var combs in palka.combinations)
 					{
-						// выключим условие по числу палок
-					if (true || combs.list.GetCountItems() >= stickCount)
-					{
-						if (goodLen < palka.lenght - combs.remain ||
-							goodLen == palka.lenght - combs.remain && bestPalka.lenght > palka.lenght ||
-							goodLen == palka.lenght - combs.remain && bestPalka.scladid > palka.scladId)
+					// выключим условие по числу палок
+					var currPersentage = Math.Round(Convert.ToDouble(((double)palka.lenght - (double)combs.remain) / (double)palka.lenght), 3);
+						if (goodLen < currPersentage ||
+							goodLen == currPersentage && bestPalka.lenght < palka.lenght ||
+							goodLen == currPersentage && bestPalka.scladid > palka.scladId)
 						{
 							// переписываем полезную нагрузку
-							goodLen = palka.lenght - combs.remain;
+							goodLen = currPersentage;
 							// лист комбинаций
 							bestList = combs;
 							// длина, номер склада
 							bestPalka = (palka.lenght, palka.scladId);
 						}
-					}
+					
 					}
 				}
             
