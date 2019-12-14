@@ -26,7 +26,7 @@ namespace Raspil
 		public void RunServer()
 		{
 
-			Console.WriteLine("Сервер запущен. Ожидание подключений...");
+			Console.WriteLine("Сервер запущен. Ожидает подключений...");
 			
 			while (true)
 			{
@@ -34,7 +34,7 @@ namespace Raspil
 				try
 				{
 					var newConn = serv.Accept();
-					var threadObject = new Runnable(newConn, serv);
+					var threadObject = new RequestHandler(newConn, serv);
 					var th = new Thread(new ThreadStart(threadObject.Run));
 
 					th.Start();
@@ -56,11 +56,11 @@ namespace Raspil
 			File.AppendAllText(Path.Combine(Directory.GetCurrentDirectory(), logName), DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + " : " + msg);
 		}
 
-		private class Runnable
+		private class RequestHandler
 		{
 			Socket clientSocket;
 			AppExchangeServer serv;
-			public Runnable(Socket s, AppExchangeServer ss) { serv = ss; clientSocket = s; }
+			public RequestHandler(Socket s, AppExchangeServer ss) { serv = ss; clientSocket = s; }
 
 
 			public void Run()
@@ -72,9 +72,6 @@ namespace Raspil
 				var message = serv.GetData(clientSocket);
 
 				//WriteLog(message);
-
-
-
 				serv.SendString("100\n\r Начинаем просчет комбинаций", clientSocket);
 				var result = FormResult(message);
 
@@ -94,7 +91,8 @@ namespace Raspil
 				}
 				catch
 				{
-					throw new Exception("Не удалось сбилдить json запроса / неправильный json");
+					throw new Exception("Не удалось корректно сформировать обьект из json запроса \n " +
+						"неправильный json");
 				}
 
 
@@ -116,33 +114,18 @@ namespace Raspil
 				}
 
 
-				////добавим  число строк
-				//int x = 1;
-				//order = order.Select(el =>
-				//{
-				//	var t = el[0];
-				//	el[0] = el[2];
-				//	el[2] = t;
-				//	var e1 = el.ToList();
-				//	e1.Add(x++);
-				//	return e1.ToArray();
-				//}).ToArray();
-
-
 				// начинаем простраивать карту распила
 				var raspil = new RaspilOperator(order, store, widthSaw, optimize, scladMax);
 
-				List<string> result = null;
+				
 				//string[] zz = null;
 				OrderList remain = null;
 				long milliseconds = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-				result = raspil.Algoritm1();
+				var result = raspil.Algoritm();
 
 				Console.WriteLine((DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond - milliseconds).ToString() + "ms");
 				// если остаток есть, отрежем последние элементы(это нумерация строк)
-				remain = raspil.ordersRemain != null ? 
-					raspil.ordersRemain : 
-					null;
+				
 
 
 				// карта распила построенная по принятым доскам склада
@@ -156,6 +139,7 @@ namespace Raspil
 
 			private int[][] TransformJArray(JArray arr)
 			{
+				
 				return arr.Select(jv => jv.Select(j => (int)j).ToArray()).ToArray();
 			}
 

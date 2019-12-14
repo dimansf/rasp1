@@ -7,24 +7,64 @@ using System.Threading.Tasks;
 namespace Raspil
 {
 
-	
-	public class RaspilMap
+
+	public class RaspilMap : Dictionary<int, List<OneBoardCombinations>>
 	{
-		Dictionary<int, List<OneBoardCombinations>> map;
-		public RaspilMap() 
+
+		public RaspilMap() : base()
 		{
-			map = new Dictionary<int, List<OneBoardCombinations>>();
+
 		}
 
-		public void Add(int key, OneBoardCombinations combList)
+		public new void Add(int key, List<OneBoardCombinations> value)
 		{
-			var index = map[key].IndexOf(combList);
-			if (index == -1)
-				map[key].Add(combList);
+
+			var onc = value[0];
+			List<OneBoardCombinations> val;
+			this.TryGetValue(key, out val);
+
+			if (val != null)
+			{
+				var index = val.IndexOf(onc);
+				if (index == -1)
+					val.Add(onc);
+				else
+					val[index].Duplicate();
+			}
 			else
-				map[key][index].Duplicate();
+			{
+				base.Add(key, value);
+			}
 
 
+
+
+		}
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="or"></param>
+		/// <param name="st"></param>
+		/// <returns>(ordersCounter, storesCounter)</returns>
+		public (int, int) GetTotalBoardsInMap(int or, int st) {
+			var orders = 0;
+			var stores = 0;
+			this.Select(kp => {
+				kp.Value.Select(oneComb => {
+					var (ors, s) = oneComb.GetTotal();
+					orders += ors;
+					stores += s;
+					return 0;
+				}).ToArray(); 
+				return 0;
+			}).ToArray();
+			return (orders, stores);
+		}
+
+		public new string ToString()
+		{
+
+			return "";
 		}
 
 
@@ -32,38 +72,61 @@ namespace Raspil
 	/// <summary>
 	/// (остаток от доски, карта элементов)
 	/// </summary>
-	public class OneBoardCombinations : List<OrderList>, IEquatable<OneBoardCombinations>
+	public class OneBoardCombinations : List<OrderList>, IEquatable<OneBoardCombinations>, IEnumerable<OrderList>
 	{
 
 		/// <summary>
 		/// 
 		/// </summary>
 		public readonly StoreBoard board;
-		public int boardCounter = 1;
 
-		public OneBoardCombinations(StoreBoard board = null, List<OrderList> list = null) : base()
+
+		public OneBoardCombinations(StoreBoard board, List<OrderList> list = null) : base()
 		{
-			if (board != null)
-				this.board = board;
+			this.board = (StoreBoard)board.Clone();
+			this.board.count = 1;
 			if (list != null)
 				AddRange(list);
 		}
 
 		public int WidthSawSelect(int widthSaw)
 		{
-			int counter = 0;
-			ForEach(orderList =>
+			int counter = this.Count;
+
+			RemoveAll(orderList =>
 			{
-				if (board.len - orderList.TotalCount() * widthSaw + orderList.Summlen() >= -widthSaw)
-				{
-					Remove(orderList);
-					counter++;
-				}
+				var rem = board.len - orderList.TotalCount() * widthSaw - orderList.Summlen();
+				return rem < -widthSaw;
 			});
-			return counter;
+			return counter - this.Count;
 
 		}
-		public OneBoardCombinations getBestOneBoardCombination()
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns> (ordersSum, storeSumm)</returns>
+		public (int, int) GetTotal() {
+			var ordersSum = this.Aggregate(0, (sum, list) => list.TotalCount());
+			var storeSumm = board.count;
+			return (ordersSum * storeSumm, storeSumm);
+		}
+		public new void AddRange(IEnumerable<OrderList> items)
+		{
+			items.Select(el => { Add(el); return 0; }).ToArray();
+		}
+
+		public new void Add(OrderList item)
+		{
+			var flag = true;
+			ForEach(list =>
+			{
+				if (list.FullCompare(item))
+					flag = false;
+			});
+			if (flag)
+				base.Add(item);
+		}
+		public OneBoardCombinations GetBestOneBoardCombination()
 		{
 			var bestList = new OrderList();
 
@@ -75,57 +138,63 @@ namespace Raspil
 					bestList = combination;
 
 			});
-			return new OneBoardCombinations((StoreBoard)board.Clone(), new List<OrderList>() { (OrderList)bestList.Clone() });
+			return new OneBoardCombinations(board.Clone() as StoreBoard, new List<OrderList>() { bestList.Clone() as OrderList });
 		}
-		public double getBestPercantage(int index = 0)
+		public double GetBestPercantage(int index = 0)
 		{
 			return Math.Round(Convert.ToDouble((double)this[index].Summlen() / (double)board.len), 3);
 		}
 
 		public void Duplicate()
 		{
-			boardCounter++;
+			board.count++;
 		}
 
 		public int LiquidSelect(int longMeasure = 5500)
 		{
-			int counter = 0;
+			int counter = Count;
 			// если палка не длиномер то длину задать искуственно
 			var baseForMin = board.len >= 5000 ? board.len : longMeasure;
-			ForEach(orderList =>
+
+			RemoveAll(orderList =>
 			{
+				var flag = true;
 				var remain = board.len - orderList.Summlen();
 
-
-
-				if (!(remain >= board.remain || remain <= baseForMin / 100 * board.remainPercent))
+				if (remain >= board.remain || remain <= baseForMin / 100 * board.remainPercent)
 				{
-					counter++;
-					Remove(orderList);
+					flag = false;
 				}
-				else
-				if (!(orderList.TotalCount() == 1 && board.numRepos > 2 && orderList.Summlen() * 2 > board.len))
+
+				if (orderList.TotalCount() == 1 && board.numRepos > 2 && orderList.Summlen() * 2 >= board.len)
 				{
-					counter++;
-					Remove(orderList);
+
+					flag = false;
 				}
+
+				return flag;
 			});
-			return counter;
+
+			return counter - Count;
 		}
 
 		public bool Equals(OneBoardCombinations other)
 		{
-			var flag = this.board == other.board;
+			var flag = board == other.board &&
+				other.Count == Count && Count == 1;
+
+			var oneList = this[0];
 			if (!flag) return flag;
-			ForEach(el =>
-			{
-				if (other.IndexOf(el) == -1)
-					flag = false;
-			});
-			return flag;
+
+			return flag && oneList.FullCompare(other[0]);
 
 		}
 	}
+
+
+
+
+
 	//[ид, длина, кол - во, ликвид, макс.обр, номер склада]
 	public class StoreBoard : OrderBoard, IEquatable<StoreBoard>
 	{
@@ -135,19 +204,31 @@ namespace Raspil
 		//минимальный процент остатка от распила
 		public int remainPercent = 0;
 		public int numRepos = 0;
-		public StoreBoard():base() { }
-		public StoreBoard(OrderBoard ob): base(ob) {
-			
+		public StoreBoard() : base() { }
+		public StoreBoard(OrderBoard ob) : base(ob)
+		{
+
 		}
 		public new object Clone()
 		{
 			StoreBoard clone = new StoreBoard((OrderBoard)base.Clone());
-			
+
 			clone.remain = remain;
 			clone.remainPercent = remainPercent;
 			clone.numRepos = numRepos;
 			return clone;
 
+		}
+		public bool FullCompare(StoreBoard obj2)
+		{
+			if (id == obj2.id &&
+				len == obj2.len &&
+				remain == obj2.remain &&
+				remainPercent == obj2.remainPercent &&
+				numRepos == obj2.numRepos &&
+				count == obj2.count
+				) return true;
+			return false;
 		}
 		public bool Equals(StoreBoard other)
 		{
@@ -160,11 +241,13 @@ namespace Raspil
 				obj1.len == obj2.len &&
 				obj1.remain == obj2.remain &&
 				obj1.remainPercent == obj2.remainPercent &&
-				obj1.numRepos == obj2.numRepos 
-				//obj1.count == obj2.count
+				obj1.numRepos == obj2.numRepos /*&&
+				obj1.count == obj2.count*/
+
 				) return true;
 			return false;
 		}
+
 		public static bool operator !=(StoreBoard obj1, StoreBoard obj2)
 		{
 			if (obj1 == obj2) return false;
@@ -178,13 +261,14 @@ namespace Raspil
 		public int id = 0;
 		public int len = 0;
 		public int count = 0;
-		//public int lineNumber = -1;
+
 
 		//public new string ToString() { 
 
 		//}
 		public OrderBoard() { }
-		public OrderBoard(OrderBoard ob) {
+		public OrderBoard(OrderBoard ob)
+		{
 			id = ob.id;
 			len = ob.len;
 			count = ob.count;
@@ -198,10 +282,18 @@ namespace Raspil
 				id = this.id,
 				len = this.len,
 				count = this.count
-				//lineNumber = this.lineNumber
-			};
-		}
 
+			};
+
+		}
+		public bool FullCompare(OrderBoard obj2)
+		{
+			if (id == obj2.id &&
+				len == obj2.len &&
+				count == obj2.count
+				) return true;
+			return false;
+		}
 		public bool Equals(OrderBoard other)
 		{
 			return this == other;
@@ -210,9 +302,8 @@ namespace Raspil
 		public static bool operator ==(OrderBoard obj1, OrderBoard obj2)
 		{
 			if (obj1.id == obj2.id &&
-				obj1.len == obj2.len 
-				//obj1.count == obj2.count 
-				//obj1.lineNumber == obj2.lineNumber
+				obj1.len == obj2.len /*&&
+				obj1.count == obj2.count*/
 				) return true;
 			return false;
 		}
@@ -224,17 +315,18 @@ namespace Raspil
 		}
 	}
 
-	public class StoreList : List<StoreBoard>
+	public class StoreList : List<StoreBoard>, IEnumerable<StoreBoard>
 	{
 		public StoreList(IEnumerable<StoreBoard> list) : base()
 		{
-			list.Select(el => { Add(el); return true; });
+			list.Select(el => { Add(el); return true; }).ToArray();
 		}
-		public StoreList(int[][] elems) : base()
+		public StoreList(IEnumerable<int[]> elems) : base()
 		{
-			elems.Select(row =>
+
+			AddRange(elems.Select(row =>
 			{
-				Add(new StoreBoard()
+				return new StoreBoard()
 				{
 					id = row[0],
 					len = row[1],
@@ -242,32 +334,46 @@ namespace Raspil
 					remain = row[3],
 					remainPercent = row[4],
 					numRepos = row[5]
-				});
-				return 0;
-			}).ToArray();
+				};
+			}).ToArray());
 		}
+
 		public void Subtract(OneBoardCombinations board)
 		{
 			this[IndexOf(board.board)].count -= board.board.count;
-			ClearEmptyOrderBoards();
-
+			ClearEmptyBoards();
 		}
 
-		private int ClearEmptyOrderBoards()
+		public bool FullCompare(StoreList obj2)
 		{
-			int c = 0;
-			ForEach(el =>
+
+			var flag = true;
+			obj2.ForEach(listEl =>
 			{
-				if (el.count == 0)
+				var counter = this.Aggregate(-1, (index, el) =>
 				{
-					this.Remove(el);
-					c++;
-				}
-
+					if (listEl.FullCompare(el))
+						return this.IndexOf(el);
+					return index;
+				});
+				if (counter == -1)
+					flag = false;
 			});
-
-			return c;
+			return flag;
 		}
+		private int ClearEmptyBoards()
+		{
+			int c = Count;
+			RemoveAll(el => el.count == 0);
+			this.Where(el => el.count < 0).Select(el =>
+			{
+				throw new Exception("Class Raspil.StoreList in method ClearEmptyOrderBoards() " +
+					"element has negative counter"); return 0;
+			}).ToArray();
+
+			return c - Count;
+		}
+
 
 		public int FindLongMeasure(int id)
 		{
@@ -280,49 +386,46 @@ namespace Raspil
 			return max;
 		}
 
-		
+
 	}
-	public class OrderList : List<OrderBoard>, ICloneable, IEnumerable<OrderBoard>
+	public class OrderList : List<OrderBoard>, ICloneable, IEnumerable<OrderBoard>, IEquatable<OrderList>
 	{
 		public OrderList() : base() { }
 
 		public OrderList(IEnumerable<OrderBoard> list) : base()
 		{
-			list.Select(el => { Add(el); return true; });
-			
+			list.Select(el => { Add(el); return true; }).ToArray();
+
 		}
 
-		public OrderList(IEnumerable<int[]> elems)
+		public OrderList(IEnumerable<int[]> elems) : base()
 		{
 			int i = 0;
-			elems.Select(row =>
-			{
-				Add(new OrderBoard()
+			AddRange(elems.Select(row =>
+				new OrderBoard()
 				{
 					id = row[0],
 					len = row[1],
 					count = row[2],
-					//lineNumber = i++
+				}
+			).ToArray());
+		}
+		//public void Substitute(OrderBoard board)
+		//{
 
-				});
-				return 0;
-			}).ToArray();
-		}
-		public void Substitute(OrderBoard board)
+		//	var idx = IndexOf(board);
+		//	if (idx != -1)
+		//	{
+
+		//		this[idx].count = board.count;
+		//	}
+		//	else
+		//	{
+		//		Add(board);
+		//	}
+		//}
+		public new void Add(OrderBoard board)
 		{
-			
-			var idx = IndexOf(board);
-			if (idx != -1)
-			{
-				
-				this[idx].count = board.count;
-			}
-			else
-			{
-				Add(board);
-			}
-		}
-		public new void Add(OrderBoard board) {
 			var idx = IndexOf(board);
 			if (idx != -1)
 			{
@@ -330,36 +433,43 @@ namespace Raspil
 			}
 			else
 			{
-				base.Add(board); 
+				base.Add(board);
 			}
 		}
 		public new void AddRange(IEnumerable<OrderBoard> collection)
 		{
 			collection.Select(el => { Add(el); return 1; }).ToArray();
 		}
-		public void Subtract(OneBoardCombinations board) {
-			board[0].ForEach(el =>
+
+		//public void Subtract(OneBoardCombinations board)
+		//{
+
+		//	this[IndexOf(board.board)].count -= board.board.count;
+		//	ClearEmptyBoards();
+		//}
+		public void Subtract(IEnumerable<OrderList> rows)
+		{
+			rows.Select(collection =>
+				collection.Select(el =>
 			{
 				this[IndexOf(el)].count -= el.count;
-			});
+				return 0;
+			}).ToArray()).ToArray();
 
-			ClearEmptyOrderBoards();
+
+			ClearEmptyBoards();
 
 		}
 
-		private int ClearEmptyOrderBoards() {
+		private int ClearEmptyBoards()
+		{
 			int c = 0;
-			ForEach(el =>
-			{
-				if (el.count == 0) {
-					this.Remove(el);
-					c++;
-				}
-					
-			});
-
+			RemoveAll(el => { c++; return el.count == 0; });
+			if (this.Where(el => el.count < 0).ToArray().Length > 0)
+				throw new Exception("Class Raspil.OrderList in method ClearEmptyBoards() element has negative counter");
 			return c;
 		}
+
 		public object Clone()
 		{
 			var orl = new OrderList();
@@ -392,6 +502,29 @@ namespace Raspil
 				x += tup.len * tup.count;
 			});
 			return x;
+		}
+		public bool FullCompare(OrderList obj2)
+		{
+
+			var flag = Count == obj2.Count;
+			if (!flag) return flag;
+			obj2.ForEach(listEl =>
+			{
+				var counter = this.Aggregate(-1, (index, el) =>
+				{
+					if (listEl.FullCompare(el))
+						return this.IndexOf(el);
+					return index;
+				});
+				if (counter == -1)
+					flag = false;
+			});
+			return flag;
+		}
+
+		public bool Equals(OrderList other)
+		{
+			return this == other;
 		}
 
 		public static bool operator ==(OrderList obj1, OrderList obj2)

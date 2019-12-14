@@ -1,9 +1,10 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
+using Raspil;
+using System.Collections.Generic;
 
-
-namespace Raspil
+namespace RaspilTests
 {
 	[TestClass]
 	public class OrderListTest
@@ -39,21 +40,47 @@ namespace Raspil
 			var res = new OrderList(listMOck);
 			var res2 = new OrderList(listMOck);
 			res.AddRange(res2);
-			
+
 			Assert.AreEqual(res.Sum(el => el.count), res2.Sum(el => el.count) * 2);
 
 		}
 
-		[TestMethod]
+		//[TestMethod]
 		public void Substitute()
 		{
 			var res = new OrderList(listMOck);
 			var b = listMOck[0];
 			var board = new OrderBoard() { id = b[0], len = b[1], count = 100 };
-			res.Substitute(board);
+			//res.Substitute(board);
 
 			Assert.AreEqual(1, res.Where(el => el.count == 100).Count());
 
+		}
+		
+
+		[TestMethod]
+		public void Subtract()
+		{
+			var res = new OrderList(listMOck);
+			var sum = res.Sum(el => el.count);
+			var b = listMOck[0];
+			var board = new OrderBoard() { id = b[0], len = b[1], count = 1 };
+
+			res.Subtract(new List<OrderList>() { new OrderList() { board } });
+			Assert.AreEqual(sum - 1, res.Sum(el => el.count));
+
+		}
+
+		[TestMethod]
+		public void ClearEmptyOrderBoards()
+		{
+			var res = new OrderList(listMOck);
+			var sum = res.Count;
+			var b = listMOck[0];
+			var board = new OrderBoard() { id = b[0], len = b[1], count = 3 };
+			res.Subtract(new List<OrderList>() { new OrderList() { board } });
+
+			Assert.AreEqual(sum - 1, res.Count);
 		}
 
 
@@ -76,17 +103,21 @@ namespace Raspil
 		};
 
 		[TestMethod]
-		public void ListGenerateTest()
+		public void ListGenerate()
 		{
 			var res = new StoreList(listMOck);
 			Assert.AreEqual(listMOck.Length, res.Count);
 
 		}
+		
 		[TestMethod]
-		public void ListAdditionTest()
+		public void ListAddition()
 		{
-			//var res = new StoreList(listMOck).Clone() as StoreList;
-			//Assert.AreEqual(3, res.Count);
+			var res = new StoreList(listMOck);
+			var res2 = new StoreList(listMOck);
+			res.AddRange(res2);
+
+			Assert.AreEqual(res.Sum(el => el.count), res2.Sum(el => el.count) * 2);
 
 		}
 	}

@@ -55,6 +55,8 @@
     <Compile Include="Test.StoreOrderBoard.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Test.StoreOrderList.cs" />
+    <Compile Include="Test.OneBoardCombinations.cs" />
+    <Compile Include="Test.RaspilMap.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

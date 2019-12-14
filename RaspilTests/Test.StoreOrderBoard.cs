@@ -1,7 +1,8 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Raspil;
 
-namespace Raspil
+namespace RaspilTests
 {
 	[TestClass]
 	public class StoreBoardTest
