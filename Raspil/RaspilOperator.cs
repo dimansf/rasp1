@@ -85,6 +85,8 @@ namespace Raspil
 				{	// 1,2 or 3,4,5
 					raspileMap.Add(GetRaspileMap(scladMax ? preassignOrderArray.shortMeasures : preassignOrderArray.all));
 					DoCut(raspileMap[k - 1]);
+
+
 				}
 				catch
 				{
